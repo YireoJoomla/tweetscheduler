@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension type="component" version="2.5.0" method="upgrade">
+    <name>COM_TWEETSCHEDULER</name>
+    <author>Yireo</author>
+    <authoremail>info@yireo.com</authoremail>
+    <authorurl>http://www.yireo.com</authorurl>
+    <creationDate>May 2014</creationDate>
+    <copyright>Copyright (C) 2014 Yireo.com. All rights reserved.</copyright>
+    <license>http://www.gnu.org/licenses/gpl-3.0.html GNU/GPL</license>
+    <version>0.2.19</version>
+    <description>COM_TWEETSCHEDULER_DESC</description>
+
+    <!-- installation part -->
+    <install>
+        <sql>
+            <file driver="mysql" charset="utf8">sql/install.mysql.utf8.sql</file>
+        </sql>
+    </install>
+    <uninstall>
+        <sql>
+            <file driver="mysql" charset="utf8">sql/uninstall.mysql.utf8.sql</file>
+        </sql>
+    </uninstall>
+    <update>
+        <schemas>
+             <schemapath type="mysql">sql</schemapath>
+        </schemas>
+    </update>
+
+    <scriptfile>script.tweetscheduler.php</scriptfile>
+
+    <files folder="site">
+        <filename>index.html</filename>
+        <filename>tweetscheduler.php</filename>
+    </files>
+    
+    <!-- administration part -->
+    <administration>
+
+        <menu task="default" img="../media/com_tweetscheduler/images/menu-tweetscheduler.png">COM_TWEETSCHEDULER</menu>
+        <submenu>
+            <menu link="option=com_tweetscheduler&amp;view=home">COM_TWEETSCHEDULER_HOME</menu>
+            <menu link="option=com_tweetscheduler&amp;view=tweets">COM_TWEETSCHEDULER_TWEETS</menu>
+            <menu link="option=com_tweetscheduler&amp;view=categories">COM_TWEETSCHEDULER_CATEGORIES</menu>
+            <menu link="option=com_tweetscheduler&amp;view=accounts">COM_TWEETSCHEDULER_ACCOUNTS</menu>
+        </submenu>
+
+        <files folder="admin">
+            <folder>helpers</folder>
+            <folder>fields</folder>
+            <folder>lib</folder>
+            <folder>models</folder>
+            <folder>sql</folder>
+            <folder>tables</folder>
+            <folder>views</folder>
+            <filename>config.xml</filename>
+            <filename>controller.php</filename>
+            <filename>index.html</filename>
+            <filename>tweetscheduler.php</filename>
+        </files>
+
+        <languages folder="admin/language">
+            <language tag="en-GB">en-GB.com_tweetscheduler.sys.ini</language>
+            <language tag="en-GB">en-GB.com_tweetscheduler.ini</language>
+            <language tag="en-GB">en-GB.lib_yireo.ini</language>
+        </languages>
+
+    </administration>
+    
+    <media folder="media" destination="com_tweetscheduler">
+        <folder>css</folder>
+        <folder>js</folder>
+        <folder>images</folder>
+        <filename>index.html</filename>
+    </media>
+
+    <updateservers>
+        <server type="extension" priority="1" name="com_tweetscheduler">http://www.yireo.com/updates/com_tweetscheduler.xml</server>
+    </updateservers>
+</extension>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<form>
+    <fields name="params">
+        <fieldset name="params">
+            <field name="reschedule" type="list" default="0" label="COM_TWEETSCHEDULER_TWEET_PARAM_RESCHEDULE" description="COM_TWEETSCHEDULER_TWEET_PARAM_RESCHEDULE_DESC">
+                <option value="">No</option>
+                <option value="1hour">1 Hours Later</option>
+                <option value="2hour">2 Hours Later</option>
+                <option value="3hour">3 Hours Later</option>
+                <option value="4hour">4 Hours Later</option>
+                <option value="5hour">5 Hours Later</option>
+                <option value="6hour">6 Hours Later</option>
+                <option value="8hour">8 Hours Later</option>
+                <option value="12hour">12 Hours Later</option>
+                <option value="18hour">18 Hours Later</option>
+                <option value="1day">1 Day Later</option>
+                <option value="2day">2 Days Later</option>
+                <option value="3day">3 Days Later</option>
+                <option value="4day">4 Days Later</option>
+                <option value="5day">5 Days Later</option>
+                <option value="6day">6 Days Later</option>
+                <option value="1week">1 Week Later</option>
+                <option value="2week">2 Weeks Later</option>
+                <option value="3week">3 Weeks Later</option>
+                <option value="1month">1 Month Later</option>
+                <option value="2month">2 Month Later</option>
+                <option value="3month">3 Month Later</option>
+                <option value="6month">6 Month Later</option>
+                <option value="1year">1 Year Later</option>
+            </field>
+        </fieldset>
+    </fields>
+</form>

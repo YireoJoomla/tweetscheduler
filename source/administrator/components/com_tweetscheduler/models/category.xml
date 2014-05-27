@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<form>  
+    <fields name="params">
+        <fieldset name="params">
+            <field name="url_position" type="list" default="after" label="COM_TWEETSCHEDULER_CATEGORY_PARAM_URL_POSITION" description="COM_TWEETSCHEDULER_CATEGORY_PARAM_URL_POSITION">
+                <option value="before">COM_TWEETSCHEDULER_CATEGORY_PARAM_URL_POSITION_BEFORE</option>
+                <option value="after">COM_TWEETSCHEDULER_CATEGORY_PARAM_URL_POSITION_AFTER</option>
+            </field>
+        </fieldset>
+    </fields>
+</form>

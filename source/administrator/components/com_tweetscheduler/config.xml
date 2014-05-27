@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<config>
+    <fields>
+        <fieldset name="basic">
+            <field name="bitly_username" type="text" default="" label="COM_TWEETSCHEDULER_FIELD_BITLY_USERNAME" description="COM_TWEETSCHEDULER_FIELD_BITLY_USERNAME_DESC" size="60" />
+            <field name="bitly_apikey" type="text" default="" label="COM_TWEETSCHEDULER_FIELD_BITLY_APIKEY" description="COM_TWEETSCHEDULER_FIELD_BITLY_APIKEY_DESC" size="60" />
+            <field name="d404_hostname" type="text" default="" label="COM_TWEETSCHEDULER_FIELD_D404_HOSTNAME" description="COM_TWEETSCHEDULER_FIELD_D404_HOSTNAME_DESC" />
+            <field name="google_api_key" type="text" default="" label="COM_TWEETSCHEDULER_FIELD_GOOGLE_API_KEY" description="COM_TWEETSCHEDULER_FIELD_GOOGLE_API_KEY_DESC" size="60" />
+        </fieldset>
+        <fieldset name="editor" label="COM_TWEETSCHEDULER_CONFIG_FIELDSET_EDITOR">
+            <field name="article_parts" type="list" default="tu" 
+                label="COM_TWEETSCHEDULER_CONFIG_FIELD_ARTICLE_PARTS" description="COM_TWEETSCHEDULER_CONFIG_FIELD_ARTICLE_PARTS_DESC">
+                <option value="tu">COM_TWEETSCHEDULER_CONFIG_FIELD_ARTICLE_PARTS_OPTION_TU</option>
+                <option value="ut">COM_TWEETSCHEDULER_CONFIG_FIELD_ARTICLE_PARTS_OPTION_UT</option>
+                <option value="bu">COM_TWEETSCHEDULER_CONFIG_FIELD_ARTICLE_PARTS_OPTION_BU</option>
+                <option value="ub">COM_TWEETSCHEDULER_CONFIG_FIELD_ARTICLE_PARTS_OPTION_UB</option>
+            </field>
+            <field name="article_suffix" type="text" default="" size="60"
+                label="COM_TWEETSCHEDULER_CONFIG_FIELD_ARTICLE_PREFIX" description="COM_TWEETSCHEDULER_CONFIG_FIELD_ARTICLE_PREFIX_DESC" />
+            <field name="article_prefix" type="text" default="" size="60"
+                label="COM_TWEETSCHEDULER_CONFIG_FIELD_ARTICLE_SUFFIX" description="COM_TWEETSCHEDULER_CONFIG_FIELD_ARTICLE_SUFFIX_DESC" />
+        </fieldset>
+        <fieldset name="backend" label="LIB_YIREO_CONFIG_TAB_BACKEND">
+            <field name="support_key" type="text" default="" size="60"
+                label="LIB_YIREO_CONFIG_FIELD_SUPPORT_KEY" description="LIB_YIREO_CONFIG_FIELD_SUPPORT_KEY_DESC" />
+            <field name="toolbar_show_savenew" type="radio" default="1" 
+                label="LIB_YIREO_CONFIG_FIELD_TOOLBAR_SHOW_SAVENEW" description="LIB_YIREO_CONFIG_FIELD_TOOLBAR_SHOW_SAVENEW">
+                <option value="0">JNO</option>
+                <option value="1">JYES</option>
+            </field>
+            <field name="toolbar_show_saveascopy" type="radio" default="1" 
+                label="LIB_YIREO_CONFIG_FIELD_TOOLBAR_SHOW_SAVEASCOPY" description="LIB_YIREO_CONFIG_FIELD_TOOLBAR_SHOW_SAVEASCOPY_DESC">
+                <option value="0">JNO</option>
+                <option value="1">JYES</option>
+            </field>
+            <field name="toolbar_show_saveandcopy" type="radio" default="1" 
+                label="LIB_YIREO_CONFIG_FIELD_TOOLBAR_SHOW_SAVEANDCOPY" description="LIB_YIREO_CONFIG_FIELD_TOOLBAR_SHOW_SAVEANDCOPY_DESC">
+                <option value="0">JNO</option>
+                <option value="1">JYES</option>
+            </field>
+            <field name="backend_feed" type="radio" default="1" 
+                label="LIB_YIREO_CONFIG_FIELD_BACKEND_FEED" description="LIB_YIREO_CONFIG_FIELD_BACKEND_FEED_DESC">
+                <option value="0">JNO</option>
+                <option value="1">JYES</option>
+            </field>
+        </fieldset>
+    </fields>
+</config>
