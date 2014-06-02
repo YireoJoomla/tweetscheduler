@@ -39,7 +39,6 @@ class HelperAbstract
                 'categories' => 'Categories',
             ),
             'obsolete_files' => array(
-                JPATH_ADMINISTRATOR.'/components/com_tweetscheduler/views/home/tmpl/default.php',
                 JPATH_ADMINISTRATOR.'/components/com_tweetscheduler/views/home/tmpl/default_ads.php',
                 JPATH_ADMINISTRATOR.'/components/com_tweetscheduler/views/home/tmpl/default_cpanel.php',
                 JPATH_ADMINISTRATOR.'/components/com_tweetscheduler/views/home/tmpl/feeds.php',

@@ -44,6 +44,15 @@ class TweetschedulerViewHome extends YireoViewHome
 
         JToolBarHelper::custom('updateQueries', 'archive', '', 'DB Upgrade', false);
 
+        $graphdata = TweetschedulerHelper::getStatsData();
+        $this->assignRef('graphdata', $graphdata);
+
+        YireoHelper::jquery();
+        $this->addJs('jquery.jqplot.min.js');
+        $this->addJs('jqplot.dateAxisRenderer.min.js');
+        $this->addCss('jquery.jqplot.css');
+        $this->addCss('backend-graph.css');
+
         parent::display($tpl);
     }
 }

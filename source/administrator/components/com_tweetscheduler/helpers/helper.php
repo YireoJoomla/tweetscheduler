@@ -268,4 +268,39 @@ class TweetschedulerHelper
 
         return $time_string;
     }
+
+    public static function getStatsData($days = 30)
+    {
+        $db = JFactory::getDBO();
+        $query = $db->getQuery(true);
+        $query->select('COUNT(  `id` ) AS  `count` , DATE(  `post_date` ) AS  `post_date`');
+        $query->from($db->quoteName('#__tweetscheduler_tweets'));
+        $query->group('DATE('.$db->quoteName('post_date').')');
+
+        $where = array();
+        $where[] = $db->quoteName('published').'=1';
+        $where[] = $db->quoteName('post_state').'=0';
+
+        $from = time();
+        $to = $from + (60*60*24*$days);
+        $where[] = $db->quoteName('post_date').' BETWEEN "'.date('Y-m-d', $from).'" AND "'.date('Y-m-d', $to).'"';
+
+        $query->where(implode(' AND ', $where));
+        $db->setQuery($query);
+        $rows = $db->loadObjectList();
+        //echo str_replace('#__', $db->getPrefix(), $query).'<br/>';
+
+        $graphdata = array();
+        for($i = 0; $i < $days; $i++) {
+            $day = date('Y-m-d', strtotime('+'.$i.' day'));
+            $graphdata[$day] = "['".$day." 12AM', 0]";
+        }
+
+        foreach($rows as $row) {
+            $graphdata[$row->post_date] = "['".$row->post_date." 12AM', ".$row->count."]";
+        }
+        //print_r($graphdata);
+
+        return $graphdata;
+    }
 }
