@@ -4,29 +4,29 @@
         <fieldset name="params">
             <field name="reschedule" type="list" default="0" label="COM_TWEETSCHEDULER_TWEET_PARAM_RESCHEDULE" description="COM_TWEETSCHEDULER_TWEET_PARAM_RESCHEDULE_DESC">
                 <option value="">No</option>
-                <option value="1hour">1 Hours Later</option>
-                <option value="2hour">2 Hours Later</option>
-                <option value="3hour">3 Hours Later</option>
-                <option value="4hour">4 Hours Later</option>
-                <option value="5hour">5 Hours Later</option>
-                <option value="6hour">6 Hours Later</option>
-                <option value="8hour">8 Hours Later</option>
-                <option value="12hour">12 Hours Later</option>
-                <option value="18hour">18 Hours Later</option>
-                <option value="1day">1 Day Later</option>
-                <option value="2day">2 Days Later</option>
-                <option value="3day">3 Days Later</option>
-                <option value="4day">4 Days Later</option>
-                <option value="5day">5 Days Later</option>
-                <option value="6day">6 Days Later</option>
-                <option value="1week">1 Week Later</option>
-                <option value="2week">2 Weeks Later</option>
-                <option value="3week">3 Weeks Later</option>
-                <option value="1month">1 Month Later</option>
-                <option value="2month">2 Month Later</option>
-                <option value="3month">3 Month Later</option>
-                <option value="6month">6 Month Later</option>
-                <option value="1year">1 Year Later</option>
+                <option value="1hour">Every 1 Hours</option>
+                <option value="2hour">Every 2 Hours</option>
+                <option value="3hour">Every 3 Hours</option>
+                <option value="4hour">Every 4 Hours</option>
+                <option value="5hour">Every 5 Hours</option>
+                <option value="6hour">Every 6 Hours</option>
+                <option value="8hour">Every 8 Hours</option>
+                <option value="12hour">Every 12 Hours</option>
+                <option value="18hour">Every 18 Hours</option>
+                <option value="1day">Every 1 Day</option>
+                <option value="2day">Every 2 Days</option>
+                <option value="3day">Every 3 Days</option>
+                <option value="4day">Every 4 Days</option>
+                <option value="5day">Every 5 Days</option>
+                <option value="6day">Every 6 Days</option>
+                <option value="1week">Every 1 Week</option>
+                <option value="2week">Every 2 Weeks</option>
+                <option value="3week">Every 3 Weeks</option>
+                <option value="1month">Every 1 Month</option>
+                <option value="2month">Every 2 Month</option>
+                <option value="3month">Every 3 Month</option>
+                <option value="6month">Every 6 Month</option>
+                <option value="1year">Every 1 Year</option>
             </field>
         </fieldset>
     </fields>

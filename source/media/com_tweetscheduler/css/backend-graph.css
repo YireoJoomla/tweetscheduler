@@ -8,14 +8,9 @@
  */
 
 div.chart-container {
-    background-color: white;
-    margin: 20px;
-    margin-left: 0;
-    padding: 20px;
-    border: 1px solid #ccc;
 }
 
 div#chart {
-    height: 200px;
-    width: 700px;
+    height: 140px;
+    width: 100%;
 }

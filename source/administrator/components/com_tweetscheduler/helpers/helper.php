@@ -126,10 +126,11 @@ class TweetschedulerHelper
 	static public function getAccountOptions($include_null = false)
 	{
         $db = JFactory::getDBO();
-        $db->setQuery('SELECT `title`, `type`, `id` AS `value` FROM #__tweetscheduler_accounts ORDER BY ordering');
+        $db->setQuery('SELECT `title`, `type`, `id` AS `value`, `params` FROM #__tweetscheduler_accounts ORDER BY ordering');
         $rows = $db->loadObjectList();
         foreach($rows as $rowIndex => $row) {
             $row->title = $row->title.' ['.$row->type.']';
+            $row->params = YireoHelper::toRegistry($row->params);
             $rows[$rowIndex] = $row;
         }
 

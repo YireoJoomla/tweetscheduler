@@ -10,9 +10,11 @@
 
 defined('_JEXEC') or die('Restricted access');
 ?>
+<div class="well">
 <div class="chart-container">
     <h3>Post statistics of upcoming 30 days</h3>
     <div id="chart"></div>
+</div>
 </div>
 
 <script>

@@ -23,23 +23,28 @@
         <fieldset name="backend" label="LIB_YIREO_CONFIG_TAB_BACKEND">
             <field name="support_key" type="text" default="" size="60"
                 label="LIB_YIREO_CONFIG_FIELD_SUPPORT_KEY" description="LIB_YIREO_CONFIG_FIELD_SUPPORT_KEY_DESC" />
-            <field name="toolbar_show_savenew" type="radio" default="1" 
+            <field name="toolbar_show_savenew" type="radio" default="1" class="btn-group"
                 label="LIB_YIREO_CONFIG_FIELD_TOOLBAR_SHOW_SAVENEW" description="LIB_YIREO_CONFIG_FIELD_TOOLBAR_SHOW_SAVENEW">
                 <option value="0">JNO</option>
                 <option value="1">JYES</option>
             </field>
-            <field name="toolbar_show_saveascopy" type="radio" default="1" 
+            <field name="toolbar_show_saveascopy" type="radio" default="1" class="btn-group"
                 label="LIB_YIREO_CONFIG_FIELD_TOOLBAR_SHOW_SAVEASCOPY" description="LIB_YIREO_CONFIG_FIELD_TOOLBAR_SHOW_SAVEASCOPY_DESC">
                 <option value="0">JNO</option>
                 <option value="1">JYES</option>
             </field>
-            <field name="toolbar_show_saveandcopy" type="radio" default="1" 
+            <field name="toolbar_show_saveandcopy" type="radio" default="1" class="btn-group"
                 label="LIB_YIREO_CONFIG_FIELD_TOOLBAR_SHOW_SAVEANDCOPY" description="LIB_YIREO_CONFIG_FIELD_TOOLBAR_SHOW_SAVEANDCOPY_DESC">
                 <option value="0">JNO</option>
                 <option value="1">JYES</option>
             </field>
-            <field name="backend_feed" type="radio" default="1" 
+            <field name="backend_feed" type="radio" default="1" class="btn-group"
                 label="LIB_YIREO_CONFIG_FIELD_BACKEND_FEED" description="LIB_YIREO_CONFIG_FIELD_BACKEND_FEED_DESC">
+                <option value="0">JNO</option>
+                <option value="1">JYES</option>
+            </field>
+            <field name="debug" type="radio" default="0" class="btn-group"
+                label="LIB_YIREO_CONFIG_FIELD_DEBUG" description="LIB_YIREO_CONFIG_FIELD_DEBUG_DESC">
                 <option value="0">JNO</option>
                 <option value="1">JYES</option>
             </field>
