@@ -31,9 +31,12 @@ class TweetschedulerUpdate
         // Perform all queries - we don't care if it fails
         $db = JFactory::getDBO();
         foreach( $update_queries as $query ) {
-            $db->debug(0);
             $db->setQuery( $query );
-            $db->query();
+            $db->debug(0);
+            try {
+                $db->query();
+            } catch(Exception $e) {
+            }
         }
     }
 }
