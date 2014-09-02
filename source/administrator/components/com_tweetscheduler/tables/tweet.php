@@ -26,8 +26,12 @@ class TableTweet extends YireoTable
     public function __construct(& $db)
     {
         // Initialize the fields
+        $timezone = TweetschedulerHelper::getTimezone();
+        $post_date = new JDate('now +2 hours', $timezone);
+
         $this->_defaults = array(
-            'post_date' => date('Y-m-d H:m', strtotime('+2 hours')),
+            'post_date' => $post_date->format('Y-m-d H:i'),
+            'utc' => 1,
         );
 
         // Set the required fields

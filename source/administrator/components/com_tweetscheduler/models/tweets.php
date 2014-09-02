@@ -97,6 +97,14 @@ class TweetschedulerModelTweets extends YireoModel
             }
         }
 
+        $data->raw_post_date = $data->post_date;
+        if(isset($data->utc) && $data->utc == 1) {
+            $timezone = TweetschedulerHelper::getTimezone();
+            $post_date = new JDate($data->post_date);
+            $post_date->setTimezone($timezone);
+            $data->post_date = $post_date->format('Y-m-d H:i', $timezone);
+        }
+
         return $data;
     }
 

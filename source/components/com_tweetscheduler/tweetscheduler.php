@@ -19,6 +19,11 @@ require_once JPATH_COMPONENT_ADMINISTRATOR.'/helpers/helper.php';
 $db = JFactory::getDBO();
 $app = JFactory::getApplication();
 
+// Set UTC timezone
+$query = "SET time_zone = '+00:00'";
+$db->setQuery($query);
+$db->query();
+
 // Fetch the remaining tweets
 require_once JPATH_COMPONENT_ADMINISTRATOR.'/models/tweets.php';
 $model = new TweetSchedulerModelTweets();

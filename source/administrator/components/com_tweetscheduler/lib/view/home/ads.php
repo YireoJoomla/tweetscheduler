@@ -12,7 +12,7 @@
 
 defined('_JEXEC') or die('Restricted access');
 ?>
-<div id="promotion" class="well">
+<div id="promotion" class="shadedbox">
     <?php if ($this->backend_feed == 1) { ?>
     <div class="loader" />
     <?php } else { ?>
@@ -20,10 +20,12 @@ defined('_JEXEC') or die('Restricted access');
     <?php } ?>
     </div>
 </div>
-<div id="latest_news" class="well">
+<div id="latest_news" class="shadedbox">
     <?php if ($this->backend_feed == 1) { ?>
     <div class="loader" />
     <?php } else { ?>
     <?php echo JText::_('LIB_YIREO_VIEW_HOME_BLOG_DISABLED'); ?>
     <?php } ?>
 </div>
+
+</td>
