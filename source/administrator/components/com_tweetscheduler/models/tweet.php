@@ -56,6 +56,14 @@ class TweetschedulerModelTweet extends YireoModel
             $data['message'] = TweetschedulerHelperShortener::autoshortenText($data['message']);
         }
 
+        // Convert date to proper timezone
+        $timezone = TweetschedulerHelper::getTimezone();
+        $post_date = new JDate($data['post_date'], $timezone);
+        $data['post_date'] = $post_date->format('Y-m-d H:i:s', false, false);
+
+        // Set UTC flag
+        $data['utc'] = 1;
+
         return parent::store($data);
     }
 
@@ -93,6 +101,13 @@ class TweetschedulerModelTweet extends YireoModel
             $query = 'SELECT * FROM #__tweetscheduler_accounts WHERE `id` IN ('.implode(',', $data->account_id).')';
             $db->setQuery($query);
             $data->accounts = $db->loadObjectList();
+        }
+
+        if(isset($data->utc) && $data->utc == 1) {
+            $timezone = TweetschedulerHelper::getTimezone();
+            $post_date = new JDate($data->post_date);
+            $post_date->setTimezone($timezone);
+            $data->post_date = $post_date->format('Y-m-d H:i', $timezone);
         }
 
         return $data;

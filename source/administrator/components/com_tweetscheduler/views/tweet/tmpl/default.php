@@ -158,18 +158,28 @@ jQuery(window).load(function() {
         </tr>
         <tr>
             <td width="100" align="right" class="key">
-                <label for="post_state"><?php echo JText::_('COM_TWEETSCHEDULER_FIELDNAME_POST_STATE'); ?>:</label>
-            </td>
-            <td class="value">
-                <?php echo $this->lists['post_state']; ?>
-            </td>
-        </tr>
-        <tr>
-            <td width="100" align="right" class="key">
                 <label for="published"><?php echo JText::_('JPUBLISHED'); ?>:</label>
             </td>
             <td class="value">    
                 <?php echo $this->lists['published']; ?>
+            </td>
+        </tr>
+        <tr>
+            <td width="100" align="right" class="key">
+                <label for="published"><?php echo JText::_('JDATE'); ?>:</label>
+            </td>
+            <td class="value"> 
+                <?php $timezone = TweetschedulerHelper::getTimezone(); ?>
+                <?php echo JFactory::getDate()->setTimezone($timezone)->format('Y-m-d H:i', $timezone); ?>
+                (<?php echo JFactory::getConfig()->get('offset'); ?>)
+            </td>
+        </tr>
+        <tr>
+            <td width="100" align="right" class="key">
+                <label for="post_state"><?php echo JText::_('COM_TWEETSCHEDULER_FIELDNAME_POST_STATE'); ?>:</label>
+            </td>
+            <td class="value">
+                <?php echo $this->lists['post_state']; ?>
             </td>
         </tr>
         <?php if(!empty($this->item->post_error)): ?>

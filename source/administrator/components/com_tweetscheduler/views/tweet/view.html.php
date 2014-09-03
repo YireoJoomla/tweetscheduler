@@ -36,28 +36,14 @@ class TweetschedulerViewTweet extends YireoViewForm
         // Overload settings using article parameters
         $this->loadArticle();
 
-        // Build the account field
-        $account_id = $this->item->account_id;
-        $account_options = TweetschedulerHelper::getAccountOptions();
-        if(empty($account_id) && !empty($account_options)) {
-            $default_account_id = array();
-            foreach($account_options as $account_option) {
-                if(!empty($account_option->params) && $account_option->params->get('default', 0) == 1) {
-                    $default_account_id[] = $account_option->value;
-                }
-            }
-            $account_id = $default_account_id;
-        }
-        $this->lists['account_id'] = JHTML::_('select.genericlist', $account_options, 'account_id[]', 'multiple="multiple"', 'value', 'title', $account_id);
-
-        // Build the category field
+        // Build the fields
         if(!$this->item->category_id > 0) $this->item->category_id = $this->getFilter('category_id', null, null, 'com_tweetscheduler_tweets_');
-        $this->lists['category_id'] = JHTML::_('select.genericlist', TweetschedulerHelper::getCategoryOptions(false), 'category_id', null, 'value', 'title', $this->item->category_id);
-
-        // Build the other fields
+        $this->lists['category_id'] = JHTML::_('select.genericlist', TweetschedulerHelper::getCategoryOptions(true), 'category_id', null, 'value', 'title', $this->item->category_id);
+        $this->lists['account_id'] = JHTML::_('select.genericlist', TweetschedulerHelper::getAccountOptions(), 'account_id[]', 'multiple="multiple"', 'value', 'title', $this->item->account_id);
         $this->lists['post_date'] = JHTML::_('calendar', $this->item->post_date, 'post_date', 'post_date', '%Y-%m-%d %H:%M:%S', array('class' => 'inputbox'));
         $this->lists['categories'] = TweetschedulerHelper::getCategoryOptions();
 
+        // Set options for state
         if($this->item->post_state == 1) {
             $this->lists['post_state'] = JHTML::_('select.booleanlist', 'post_state', null, $this->item->post_state, 'Posted', 'Pending');
 

@@ -53,8 +53,8 @@ if($item->post_state == 1) {
 </td>
 <td class="small">
     <div class="post_date_view" id="post_date_view_<?php echo $item->id; ?>">
-        <?php echo $item->post_date; ?>
-        (<?php echo TweetschedulerHelper::formatTime($item->post_date); ?>)
+        <?php echo TweetschedulerHelper::formatDatetime($item->post_date); ?>
+        (<?php echo TweetschedulerHelper::getRelativeTime($item->raw_post_date, $item->utc); ?>)
     </div>
     <div class="post_date_edit" id="post_date_edit_<?php echo $item->id; ?>">
         <?php echo JHTML::_('calendar', $item->post_date, 'post_date['.$item->id.']', 'post_date_'.$item->id, 

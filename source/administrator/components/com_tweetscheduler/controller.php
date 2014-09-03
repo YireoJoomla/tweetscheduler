@@ -583,18 +583,30 @@ class TweetschedulerController extends YireoController
         $tweet_id = $input->getInt('id');
         $post_date = $input->getString('post_date');
 
+        // Convert date to proper timezone
+        $timezone = TweetschedulerHelper::getTimezone();
+        $post_date = new JDate($post_date, $timezone);
+        $post_date = $post_date->format('Y-m-d H:i:s', false, false);
+
         // Modify the tweet in the database
         $db = JFactory::getDBO();
         $query = $db->getQuery(true);
         $query->update($db->quoteName('#__tweetscheduler_tweets'))
             ->set($db->quoteName('post_date').'='.$db->quote($post_date))
+            ->set($db->quoteName('utc').'=1')
             ->where($db->quoteName('id').'='.$tweet_id);
         $db->setQuery($query);
         $db->query();
 
         // Output
-        $post_date_output = $post_date.' ('.TweetschedulerHelper::formatTime($post_date).')';
+        $timezone = TweetschedulerHelper::getTimezone();
+        $post_date = new JDate($post_date);
+        $post_date->setTimezone($timezone);
+        $post_date = $post_date->format('Y-m-d H:i', $timezone);
+        $post_date_output = TweetschedulerHelper::formatDatetime($post_date);
+        $post_date_output .= ' ('.TweetschedulerHelper::getRelativeTime($post_date).')';
         echo json_encode(array('post_date' => $post_date_output));
+
         $application->close();
         exit;
     }
