@@ -4,7 +4,7 @@
  * Joomla! component Tweetscheduler
  *
  * @author Yireo
- * @copyright Copyright (C) 2014
+ * @copyright Copyright 2015
  * @license GNU Public License
  * @link http://www.yireo.com/
  */
