@@ -16,145 +16,168 @@ defined('_JEXEC') or die();
  */
 class TweetschedulerViewTweet extends YireoViewForm
 {
-    /*
-     * Display method
-     *
-     * @param string $tpl
-     * @return null
-     */
+	/*
+	 * Display method
+	 *
+	 * @param string $tpl
+	 * @return null
+	 */
 	public function display($tpl = null)
 	{
-        // Load jQuery
-        YireoHelper::jquery();
+		// Load jQuery
+		YireoHelper::jquery();
 
-        // Load additional scripts
-        $this->document->addScript( JURI::root().'media/com_tweetscheduler/js/backend.js' ) ;
+		// Load additional scripts
+		$this->document->addScript(JURI::root() . 'media/com_tweetscheduler/js/backend.js');
 
-        // Load the item
-        $this->fetchItem();
+		// Load the item
+		$this->fetchItem();
 
-        // Overload settings using article parameters
-        $this->loadArticle();
+		// Overload settings using article parameters
+		$this->loadArticle();
 
-        // Build the fields
-        if(!$this->item->category_id > 0) $this->item->category_id = $this->getFilter('category_id', null, null, 'com_tweetscheduler_tweets_');
-        $this->lists['category_id'] = JHTML::_('select.genericlist', TweetschedulerHelper::getCategoryOptions(true), 'category_id', null, 'value', 'title', $this->item->category_id);
-        $this->lists['account_id'] = JHTML::_('select.genericlist', TweetschedulerHelper::getAccountOptions(), 'account_id[]', 'multiple="multiple"', 'value', 'title', $this->item->account_id);
-        $this->lists['post_date'] = JHTML::_('calendar', $this->item->post_date, 'post_date', 'post_date', '%Y-%m-%d %H:%M:%S', array('class' => 'inputbox'));
-        $this->lists['categories'] = TweetschedulerHelper::getCategoryOptions();
+		// Build the fields
+		if (!$this->item->category_id > 0)
+		{
+			$this->item->category_id = $this->getFilter('category_id', null, null, 'com_tweetscheduler_tweets_');
+		}
 
-        // Set options for state
-        if($this->item->post_state == 1) {
-            $this->lists['post_state'] = JHTML::_('select.booleanlist', 'post_state', null, $this->item->post_state, 'Posted', 'Pending');
+		$this->lists['category_id'] = JHTML::_('select.genericlist', TweetschedulerHelper::getCategoryOptions(true), 'category_id', null, 'value', 'title', $this->item->category_id);
+		$this->lists['account_id'] = JHTML::_('select.genericlist', TweetschedulerHelper::getAccountOptions(), 'account_id[]', 'multiple="multiple"', 'value', 'title', $this->item->account_id);
+		$this->lists['post_date'] = JHTML::_('calendar', $this->item->post_date, 'post_date', 'post_date', '%Y-%m-%d %H:%M:%S', array('class' => 'inputbox'));
+		$this->lists['categories'] = TweetschedulerHelper::getCategoryOptions();
 
-        } elseif($this->item->post_state == 2) {
-            $this->lists['post_state'] = JText::_('Blocked');
-
-        } else {
-            $this->lists['post_state'] = JText::_('Pending');
-        }
 		parent::display($tpl);
 	}
 
-    /*
-     * Load article information
-     *
-     * @param string $tpl
-     * @return null
-     */
+	/*
+	 * Load article information
+	 *
+	 * @param string $tpl
+	 * @return null
+	 */
 	public function loadArticle()
 	{
-        // Check for the right parameters
-        $form = JRequest::getCmd('formname');
-        $asset = JRequest::getInt('asset');
-        if($form != 'jform_articletext' || $asset > 0 == false) 
-        {
-            return false;
-        }
+		// Check for the right parameters
+		$form = JRequest::getCmd('formname');
+		$asset = JRequest::getInt('asset');
 
-        // Load the article
-        $db = JFactory::getDBO();
-        $query = $db->getQuery(true);
-        $query->select(array('a.`id`', 'a.`title`', 'a.`alias`', 'a.`introtext`', 'a.`catid`', 'c.`alias` AS catalias'));
-        $query->from('`#__content` AS a');
-        $query->join('inner', '#__categories AS c ON c.id = a.catid');
-        $query->where($db->quoteName('a.asset_id') . ' = '. $asset);
-        $db->setQuery($query);
+		if ($form != 'jform_articletext' || $asset > 0 == false)
+		{
+			return false;
+		}
 
-        $article = $db->loadObject();
-        if(empty($article)) {
-            return false;
-        }
+		// Load the article
+		$db = JFactory::getDBO();
+		$query = $db->getQuery(true);
+		$query->select(array('a.`id`', 'a.`title`', 'a.`alias`', 'a.`introtext`', 'a.`catid`', 'c.`alias` AS catalias'));
+		$query->from('`#__content` AS a');
+		$query->join('inner', '#__categories AS c ON c.id = a.catid');
+		$query->where($db->quoteName('a.asset_id') . ' = ' . $asset);
+		$db->setQuery($query);
 
-        // Enter the details
-        $this->item->title = $article->title;
-        $slug = $article->id.':'.$article->alias;
-        $catslug = $article->catid.':'.$article->catalias;;
-        $link = $this->getFrontendUrl($slug, $catslug);
-        require_once JPATH_COMPONENT.'/helpers/shortener.php';
-        $link = TweetschedulerHelperShortener::autoshortenUrl($link);
-        
-        // Construct the message
-        $this->item->message = $this->getMessageText($article->title, $article->introtext, $link);
-        return true;
+		$article = $db->loadObject();
+
+		if (empty($article))
+		{
+			return false;
+		}
+
+		// Enter the details
+		$this->item->title = $article->title;
+		$slug = $article->id . ':' . $article->alias;
+		$catslug = $article->catid . ':' . $article->catalias;;
+		$link = $this->getFrontendUrl($slug, $catslug);
+
+		require_once JPATH_COMPONENT . '/helpers/shortener.php';
+		$link = TweetschedulerHelperShortener::autoshortenUrl($link);
+
+		// Construct the message
+		$this->item->message = $this->getMessageText($article->title, $article->introtext, $link);
+
+		return true;
 	}
 
-    public function getMessageText($title, $introtext, $url)
-    {
-        // Fetch parameters
-        $params = JComponentHelper::getComponent('com_tweetscheduler')->params;
-        $article_parts = $params->get('article_parts');
-        $introtext = strip_tags($introtext);
+	public function getMessageText($title, $introtext, $url)
+	{
+		// Fetch parameters
+		$params = JComponentHelper::getComponent('com_tweetscheduler')->params;
+		$article_parts = $params->get('article_parts');
+		$introtext = strip_tags($introtext);
 
-        // Maxium char defaults
-        $maxChars = 140; // Maximum chars in 1 tweet
-        $urlChars = 30; // Estimation of chars in shortened URL
+		// Maximum chars in 1 tweet
+		$maxChars = 140;
 
-        // Setup the prefix & suffix
-        $prefix = trim($params->get('article_prefix'));
-        $suffix = trim($params->get('article_suffix'));
-    
-        // Calculate the available characters
-        $charCount = 0;
-        if(!empty($prefix)) $charCount += strlen($prefix) + 1;
-        if(!empty($suffix)) $charCount += strlen($suffix) + 1;
-        if(!empty($url)) $charCount += strlen($url) + 1;
+		// Estimation of chars in shortened URL
+		$urlChars = 30;
 
-        // Switch for the right ordering
-        $availableChars = $maxChars - $charCount - 2;
+		// Setup the prefix & suffix
+		$prefix = trim($params->get('article_prefix'));
+		$suffix = trim($params->get('article_suffix'));
 
-        if($article_parts == 'tu') {
-            $title = substr($title, 0, $availableChars);
-            $message = $prefix.' '.$title.' '.$url.' '.$suffix;
-        } elseif($article_parts == 'ut') {
-            $title = substr($title, 0, $availableChars);
-            $message = $prefix.' '.$url.' '.$title.' '.$suffix;
-        } elseif($article_parts == 'bu') {
-            $introtext = substr($introtext, 0, $availableChars);
-            $message = $prefix.' '.$url.' '.$introtext.' '.$suffix;
-        } elseif($article_parts == 'ub') {
-            $introtext = substr($introtext, 0, $availableChars);
-            $message = $prefix.' '.$introtext.' '.$url.' '.$suffix;
-        }
-        
-        $message = trim($message);
-        return $message;
-    }
+		// Calculate the available characters
+		$charCount = 0;
 
-    public function getFrontendUrl($slug, $catslug)
-    {
-        require_once JPATH_SITE.'/components/com_content/helpers/route.php' ;
-        $url = ContentHelperRoute::getArticleRoute($slug, $catslug);
+		if (!empty($prefix))
+		{
+			$charCount += strlen($prefix) + 1;
+		}
 
-        JFactory::$application = JApplication::getInstance('site');
-        $app = JApplication::getInstance('site');
-        $router = $app->getRouter();
-        $uri = $router->build($url);
-        $url = $uri->toString(array('path', 'query', 'fragment'));
-        $url = str_replace('/administrator/', '', $url);
-        $url = JURI::root().$url;
+		if (!empty($suffix))
+		{
+			$charCount += strlen($suffix) + 1;
+		}
 
-        JFactory::$application = JApplication::getInstance('administrator');
-        return $url;
-    }
+		if (!empty($url))
+		{
+			$charCount += strlen($url) + 1;
+		}
+
+		// Switch for the right ordering
+		$availableChars = $maxChars - $charCount - 2;
+
+		if ($article_parts == 'tu')
+		{
+			$title = substr($title, 0, $availableChars);
+			$message = $prefix . ' ' . $title . ' ' . $url . ' ' . $suffix;
+		}
+		elseif ($article_parts == 'ut')
+		{
+			$title = substr($title, 0, $availableChars);
+			$message = $prefix . ' ' . $url . ' ' . $title . ' ' . $suffix;
+		}
+		elseif ($article_parts == 'bu')
+		{
+			$introtext = substr($introtext, 0, $availableChars);
+			$message = $prefix . ' ' . $url . ' ' . $introtext . ' ' . $suffix;
+		}
+		elseif ($article_parts == 'ub')
+		{
+			$introtext = substr($introtext, 0, $availableChars);
+			$message = $prefix . ' ' . $introtext . ' ' . $url . ' ' . $suffix;
+		}
+
+		$message = trim($message);
+
+		return $message;
+	}
+
+	public function getFrontendUrl($slug, $catslug)
+	{
+		require_once JPATH_SITE . '/components/com_content/helpers/route.php';
+		$url = ContentHelperRoute::getArticleRoute($slug, $catslug);
+
+		JFactory::$application = JApplication::getInstance('site');
+		$app = JApplication::getInstance('site');
+
+		$router = $app->getRouter();
+		$uri = $router->build($url);
+		$url = $uri->toString(array('path', 'query', 'fragment'));
+		$url = str_replace('/administrator/', '', $url);
+		$url = JURI::root() . $url;
+
+		JFactory::$application = JApplication::getInstance('administrator');
+
+		return $url;
+	}
 }

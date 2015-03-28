@@ -68,18 +68,7 @@ if($item->post_state == 1) {
     </div>
 </td>
 <td class="small">
-    <?php switch($item->post_state) {
-        case 2:
-            echo JText::_('LIB_YIREO_BLOCKED');
-            break;
-        case 1:
-            echo JText::_('LIB_YIREO_POSTED');
-            break;
-        case 0:
-        default:
-            echo JText::_('LIB_YIREO_PENDING');
-            break;
-    } ?>
+	<?php echo JText::_('COM_TWEETSCHEDULER_FIELDNAME_POST_STATE_' . $item->post_state); ?>
 </td>
 <td>
     <?php foreach($actions as $url => $action) { ?>

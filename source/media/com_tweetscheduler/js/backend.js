@@ -69,11 +69,3 @@ function modifyPostDate(element) {
         togglePostDate(element);
     });
 }
-
-jQuery(document).ready(function() {
-    jQuery('.post_date_view').dblclick(function() {
-        var elementId = jQuery(this).attr('id');
-        togglePostDate(elementId);
-    });
-});
-

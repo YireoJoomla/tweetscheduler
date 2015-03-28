@@ -189,8 +189,10 @@ class TweetschedulerHelper
 	static public function getPostStateOptions($include_null = false)
 	{
         $rows = array(
-            array('title' => JText::_('Pending'), 'value' => 0), 
-            array('title' => JText::_('Posted'), 'value' => 1), 
+            array('title' => JText::_('COM_TWEETSCHEDULER_FIELDNAME_POST_STATE_0'), 'value' => 0),
+			array('title' => JText::_('COM_TWEETSCHEDULER_FIELDNAME_POST_STATE_1'), 'value' => 1),
+			array('title' => JText::_('COM_TWEETSCHEDULER_FIELDNAME_POST_STATE_2'), 'value' => 2),
+			array('title' => JText::_('COM_TWEETSCHEDULER_FIELDNAME_POST_STATE_3'), 'value' => 3),
         );
 
         if ($include_null) {

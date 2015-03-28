@@ -46,7 +46,7 @@ class TweetschedulerModelTweet extends YireoModel
     public function store($data)
     {
         // Flatten the account_id
-        if(is_array($data['account_id'])) {
+        if(isset($data['account_id']) && is_array($data['account_id'])) {
             $data['account_id'] = implode(',',$data['account_id']);
         }
         
@@ -307,17 +307,8 @@ class TweetschedulerModelTweet extends YireoModel
             }
         }
 
-        // Run the query
-        $db = JFactory::getDBO();
-        $post_state = (int)$post_state;
-        $post_id = $db->Quote(implode('|', $post_id));
-        if(is_array($post_error)) $post_error = implode('|', $post_error);
-        $post_error = $db->Quote($post_error);
-        $query = "UPDATE #__tweetscheduler_tweets "
-            . " SET post_state = ".$post_state.", post_id = ".$post_id.", post_error = ".$post_error
-            ." WHERE id = ".(int)$data->id;
-        $db->setQuery($query);
-        $db->query();
+        // Update the state
+		$this->updateState($data->id, $post_state, $post_id, $post_error);
 
         // Duplicate this tweet
         if($rt == true && !empty($data->params)) {
@@ -338,6 +329,42 @@ class TweetschedulerModelTweet extends YireoModel
 
         return $response;
     }
+
+	public function updateState($id, $post_state, $post_id, $post_error = null)
+	{
+		$db = JFactory::getDBO();
+		$post_state = (int) $post_state;
+
+		if(is_array($post_id))
+		{
+			$post_id = $db->Quote(implode('|', $post_id));
+		}
+
+		if(is_array($post_error))
+		{
+			$post_error = implode('|', $post_error);
+		}
+
+		$post_error = $db->Quote($post_error);
+
+		$fields = array(
+			$db->quoteName('post_state') . '=' . $post_state,
+			$db->quoteName('post_id') . '=' . $post_id,
+			$db->quoteName('post_error') . '=' . $post_error,
+		);
+
+		$conditions = array(
+			$db->quoteName('id') . '=' . (int) $id
+		);
+
+		$query = $db->getQuery(true);
+		$query->update($db->quoteName('#__tweetscheduler_tweets'))->set($fields)->where($conditions);
+
+		$db->setQuery($query);
+		echo $query;
+		$db->execute();
+	}
+
 
     /**
      * Method to duplicate a message

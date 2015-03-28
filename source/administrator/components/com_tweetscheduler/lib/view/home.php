@@ -42,13 +42,19 @@ class YireoViewHome extends YireoView
 
         // Call the parent constructor
         parent::__construct();
-            
+
+        // Load bootstrap
+        YireoHelper::bootstrap();
+ 
         // Initialize the toolbar
         if (file_exists(JPATH_COMPONENT.'/config.xml')) {
-            if(YireoHelper::isJoomla15() || JFactory::getUser()->authorise('core.admin')) {
+            if(JFactory::getUser()->authorise('core.admin')) {
                 JToolBarHelper::preferences($this->_option, 600, 800);
             }
         }
+
+        // Add the checks
+        $this->runChecks();
     }
 
     /*
@@ -129,5 +135,17 @@ class YireoViewHome extends YireoView
         } else {
             JToolBarHelper::title($component_title.': '.$title, 'generic.png');
         }
+    }
+
+    /*
+     * Helper-method to add checks to the homepage
+     *
+     * @access protected
+     * @subpackage Yireo
+     * @param string $title
+     * @return null
+     */
+    public function runChecks()
+    {
     }
 }

@@ -158,14 +158,6 @@ jQuery(window).load(function() {
         </tr>
         <tr>
             <td width="100" align="right" class="key">
-                <label for="published"><?php echo JText::_('JPUBLISHED'); ?>:</label>
-            </td>
-            <td class="value">    
-                <?php echo $this->lists['published']; ?>
-            </td>
-        </tr>
-        <tr>
-            <td width="100" align="right" class="key">
                 <label for="published"><?php echo JText::_('JDATE'); ?>:</label>
             </td>
             <td class="value"> 
@@ -173,15 +165,7 @@ jQuery(window).load(function() {
                 <?php echo JFactory::getDate()->setTimezone($timezone)->format('Y-m-d H:i', $timezone); ?>
                 (<?php echo JFactory::getConfig()->get('offset'); ?>)
             </td>
-        </tr>
-        <tr>
-            <td width="100" align="right" class="key">
-                <label for="post_state"><?php echo JText::_('COM_TWEETSCHEDULER_FIELDNAME_POST_STATE'); ?>:</label>
-            </td>
-            <td class="value">
-                <?php echo $this->lists['post_state']; ?>
-            </td>
-        </tr>
+		</tr>
         <?php if(!empty($this->item->post_error)): ?>
         <tr>
             <td width="100" align="right" class="key">
@@ -207,7 +191,8 @@ jQuery(window).load(function() {
     </fieldset>
 </td>
 <td width="50%" valign="top">
-    <?php echo $this->loadTemplate('fieldset', array('fieldset' => 'params')); ?>
+	<?php echo $this->loadTemplate('fieldset', array('fieldset' => 'basic')); ?>
+	<?php echo $this->loadTemplate('fieldset', array('fieldset' => 'params')); ?>
 </td>
 </tr>
 </tbody>

@@ -1,5 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <form>
+    <fields name="item">
+        <fieldset name="basic">
+            <field name="published" type="radio" class="btn-group" default="0" label="JPUBLISHED" labelclass="control-label" description="">
+                <option value="0">JNO</option>
+                <option value="1">JYES</option>
+            </field>
+            <field name="post_state" type="list" default="0" label="COM_TWEETSCHEDULER_FIELDNAME_POST_STATE" labelclass="control-label" description="">
+                <option value="0">COM_TWEETSCHEDULER_FIELDNAME_POST_STATE_0</option>
+                <option value="1">COM_TWEETSCHEDULER_FIELDNAME_POST_STATE_1</option>
+                <option value="2">COM_TWEETSCHEDULER_FIELDNAME_POST_STATE_2</option>
+                <option value="3">COM_TWEETSCHEDULER_FIELDNAME_POST_STATE_3</option>
+            </field>
+        </fieldset>
+    </fields>
     <fields name="params">
         <fieldset name="params">
             <field name="reschedule" type="list" default="0" label="COM_TWEETSCHEDULER_TWEET_PARAM_RESCHEDULE" description="COM_TWEETSCHEDULER_TWEET_PARAM_RESCHEDULE_DESC">
