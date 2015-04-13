@@ -7,6 +7,22 @@
  * @link http://www.yireo.com
  */
 
+jQuery(function() {
+    jQuery( "table.adminlist div.tweet_message" ).mouseover(function() {
+        jQuery(this).css('height', '100%');
+        jQuery(this).css('overflow', 'auto');
+    });
+
+    jQuery( "table.adminlist div.tweet_message" ).mouseout(function() {
+        jQuery(this).css('height', '34px');
+        jQuery(this).css('overflow', 'hidden');
+    });
+
+    jQuery("div.post_date_view").dblclick(function(event) {
+        togglePostDate(jQuery(this).attr('id'));
+    });
+});
+
 function maximumChars(text, maxChars, charsLeft_id, messageWarning_id)  {
     
     var textArea = $(text);

@@ -22,12 +22,12 @@ if($item->post_state == 1) {
 }
 ?>
 <td>
-    <div style="height:34px; overflow:hidden;">
-    <?php if ($this->isCheckedOut($item)) { ?>
+    <div class="tweet_message" style="height:34px; overflow:hidden;">
+    <?php if ($this->isCheckedOut($item)) : ?>
         <span class="checked_out"><?php echo $item->message; ?></span>
-    <?php } else { ?>
+    <?php else: ?>
         <a href="<?php echo $item->edit_link; ?>" title="<?php echo JText::_('LIB_YIREO_VIEW_EDIT'); ?>"><?php echo $item->message; ?></a>
-    <?php } ?>
+    <?php endif; ?>
     </div>
 </td>
 <td>
