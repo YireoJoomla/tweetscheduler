@@ -14,348 +14,410 @@ defined('_JEXEC') or die();
 /*
  * Tweetscheduler Tweet model
  */
+
 class TweetschedulerModelTweet extends YireoModel
 {
-    /**
-     * Override the orderby_title
-     *
-     * @var string
-     */
-    protected $_orderby_title = 'message';
+	/**
+	 * Override the orderby_title
+	 *
+	 * @var string
+	 */
+	protected $_orderby_title = 'message';
 
-    /**
-     * Constructor method
-     *
-     * @access public
-     * @param null
-     * @return null
-     */
-    public function __construct()
-    {
-        parent::__construct('tweet');
-    }
+	/**
+	 * Constructor method
+	 *
+	 * @access public
+	 *
+	 * @param null
+	 *
+	 * @return null
+	 */
+	public function __construct()
+	{
+		parent::__construct('tweet');
+	}
 
-    /**
-     * Method to store the model
-     *
-     * @access public
-     * @subpackage Yireo
-     * @param mixed $data
-     * @return bool
-     */
-    public function store($data)
-    {
-        // Flatten the account_id
-        if(isset($data['account_id']) && is_array($data['account_id'])) {
-            $data['account_id'] = implode(',',$data['account_id']);
-        }
-        
-        // Shorten the URLs in the message
-        if($this->params->get('autoshorten', 1) == 1 && !empty($data['message'])) {
-            require_once JPATH_COMPONENT_ADMINISTRATOR.'/helpers/shortener.php';
-            $data['message'] = TweetschedulerHelperShortener::autoshortenText($data['message']);
-        }
+	/**
+	 * Method to store the model
+	 *
+	 * @access     public
+	 * @subpackage Yireo
+	 *
+	 * @param mixed $data
+	 *
+	 * @return bool
+	 */
+	public function store($data)
+	{
+		// Flatten the account_id
+		if (isset($data['account_id']) && is_array($data['account_id']))
+		{
+			$data['account_id'] = implode(',', $data['account_id']);
+		}
 
-        // Convert date to proper timezone
-        $timezone = TweetschedulerHelper::getTimezone();
-        $post_date = new JDate($data['post_date'], $timezone);
-        $data['post_date'] = $post_date->format('Y-m-d H:i:s', false, false);
+		// Shorten the URLs in the message
+		if ($this->params->get('autoshorten', 1) == 1 && !empty($data['message']))
+		{
+			require_once JPATH_COMPONENT_ADMINISTRATOR . '/helpers/shortener.php';
+			$data['message'] = TweetschedulerHelperShortener::autoshortenText($data['message']);
+		}
 
-        // Set UTC flag
-        $data['utc'] = 1;
+		// Convert date to proper timezone
+		$timezone = TweetschedulerHelper::getTimezone();
+		$post_date = new JDate($data['post_date'], $timezone);
+		$data['post_date'] = $post_date->format('Y-m-d H:i:s', false, false);
 
-        return parent::store($data);
-    }
+		// Set UTC flag
+		$data['utc'] = 1;
 
-    /**
-     * Override buildQuery method
-     *
-     * @access protected
-     * @param null
-     * @return string
-     */
-    protected function buildQuery($query = '')
-    {
-        $query = "SELECT {tableAlias}.*, category.title AS category_name, category.url AS category_url, ";
-        $query .= " editor.name AS editor FROM {table} AS {tableAlias} ";
-        $query .= " LEFT JOIN #__tweetscheduler_categories AS category ON {tableAlias}.category_id = category.id ";
-        $query .= " LEFT JOIN #__users AS editor ON {tableAlias}.checked_out = editor.id ";
-        return parent::buildQuery($query);
-    }
+		return parent::store($data);
+	}
 
-    /**
-     * Method to modify the data once it is loaded
-     *
-     * @access protected
-     * @param array $data
-     * @return array
-     */
-    protected function onDataLoad($data)
-    {
-        if(is_string($data->account_id)) {
-            $data->account_id = explode(',', trim($data->account_id));
-        }
+	/**
+	 * Override buildQuery method
+	 *
+	 * @access protected
+	 *
+	 * @param null
+	 *
+	 * @return string
+	 */
+	protected function buildQuery($query = '')
+	{
+		$query = "SELECT {tableAlias}.*, category.title AS category_name, category.url AS category_url, ";
+		$query .= " editor.name AS editor FROM {table} AS {tableAlias} ";
+		$query .= " LEFT JOIN #__tweetscheduler_categories AS category ON {tableAlias}.category_id = category.id ";
+		$query .= " LEFT JOIN #__users AS editor ON {tableAlias}.checked_out = editor.id ";
 
-        if(!empty($data->account_id)) {
-            $db = JFactory::getDBO();
-            $query = 'SELECT * FROM #__tweetscheduler_accounts WHERE `id` IN ('.implode(',', $data->account_id).')';
-            $db->setQuery($query);
-            $data->accounts = $db->loadObjectList();
-        }
+		return parent::buildQuery($query);
+	}
 
-        if(isset($data->utc) && $data->utc == 1) {
-            $timezone = TweetschedulerHelper::getTimezone();
-            $post_date = new JDate($data->post_date);
-            $post_date->setTimezone($timezone);
-            $data->post_date = $post_date->format('Y-m-d H:i', $timezone);
-        }
+	/**
+	 * Method to modify the data once it is loaded
+	 *
+	 * @access protected
+	 *
+	 * @param array $data
+	 *
+	 * @return array
+	 */
+	protected function onDataLoad($data)
+	{
+		if (is_string($data->account_id))
+		{
+			$data->account_id = explode(',', trim($data->account_id));
+		}
 
-        return $data;
-    }
+		if (!empty($data->account_id))
+		{
+			$db = JFactory::getDBO();
+			$query = 'SELECT * FROM #__tweetscheduler_accounts WHERE `id` IN (' . implode(',', $data->account_id) . ')';
+			$db->setQuery($query);
+			$data->accounts = $db->loadObjectList();
+		}
 
-    /**
-     * Method to post a twitter-message
-     *
-     * @access public
-     * @param array $data
-     * @return string
-     */
-    public function postTwitter($data)
-    {
-        // Get the object
-        $twitter = TweetschedulerHelper::getTwitter($data);
+		if (isset($data->utc) && $data->utc == 1)
+		{
+			$timezone = TweetschedulerHelper::getTimezone();
+			$post_date = new JDate($data->post_date);
+			$post_date->setTimezone($timezone);
+			$data->post_date = $post_date->format('Y-m-d H:i', $timezone);
+		}
 
-        // Post the data
-        try {
-            $twitterInfo = $twitter->post_statusesUpdate(array('status' => $data->message));
-            return $twitterInfo->response;
-        } catch(Exception $e) {
-            return array('error' => $e->getMessage());
-        }
-    }
+		return $data;
+	}
 
-    /**
-     * Method to post a facebook-message
-     *
-     * @access public
-     * @param array $data
-     * @return string
-     */
-    public function postFacebook($data)
-    {
-        // Get the object
-        $facebook = TweetschedulerHelper::getFacebook($data);
-        $user = $facebook->getUser();
-        if(!$user > 0) {
-            return array('error' => 'Unable to login into Facebook');
-        }
+	/**
+	 * Method to post a twitter-message
+	 *
+	 * @access public
+	 *
+	 * @param array $data
+	 *
+	 * @return string
+	 */
+	public function postTwitter($data)
+	{
+		// Get the object
+		$twitter = TweetschedulerHelper::getTwitter($data);
 
-        // Post the data
-        $post = array(
-            'message' => $data->message,
-            'name' => $data->title,
-            'caption' => $data->title,
-            'actions' => array(array('name' => $data->category_name, 'link' => $data->category_url)),
-        );
+		// Post the data
+		try
+		{
+			$twitterInfo = $twitter->post_statusesUpdate(array('status' => $data->message));
 
-        if(!empty($data->category_url)) {
-            $post['link'] = $data->category_url;
-        }
+			return $twitterInfo->response;
+		} catch (Exception $e)
+		{
+			return array('error' => $e->getMessage());
+		}
+	}
 
-        // @todo: Create a specific field for this
-        if(!empty($data->image)) {
-            $post['image'] = $data->image;
-        }
+	/**
+	 * Method to post a facebook-message
+	 *
+	 * @access public
+	 *
+	 * @param array $data
+	 *
+	 * @return string
+	 */
+	public function postFacebook($data)
+	{
+		// Get the object
+		$facebook = TweetschedulerHelper::getFacebook($data);
+		$user = $facebook->getUser();
 
-        // @todo: Replace /feed/ with /milestones/ (title, description, start_time)
-        $apiUrl = '/me/feed';
-        if(!empty($data->page)) {
-            $pageToken = null;
-            $accounts = $facebook->api('/me/accounts');
-            if(!empty($accounts['data'])) {
-                foreach($accounts['data'] as $account) {
-                    if($account['id'] == $data->page) {
-                        $pageToken = $account['access_token'];
-                    }
-                }
-            }
+		if (!$user > 0)
+		{
+			return array('error' => 'Unable to login into Facebook');
+		}
 
-            if(!empty($pageToken)) {
-                unset($post['actions']);
-                $apiUrl = '/'.$data->page.'/feed?access_token='.$pageToken;
-            }
-        }
+		// Post the data
+		$post = array('message' => $data->message, 'name' => $data->title, 'caption' => $data->title,);
 
-        $result = $facebook->api($apiUrl, 'post', $post);
-        return $result;
-    }
+		if (!empty($data->category_name) && !empty($data->category_url))
+		{
+			$post['actions'] = array(array('name' => $data->category_name, 'link' => $data->category_url));
+		}
 
-    /**
-     * Method to post a Linkedin-message
-     *
-     * @access public
-     * @param array $data
-     * @return string
-     */
-    public function postLinkedin($data)
-    {
-        // Get the object
-        $linkedin = TweetschedulerHelper::getLinkedin($data);
+		if (!empty($data->category_url))
+		{
+			$post['link'] = $data->category_url;
+		}
 
-        // Post the data
-        $content = array(
-            'title' => $data->title,
-            'description' => $data->message,
-            'submitted-url' => $data->category_url,
-            //'submitted-image-url' => null,
-        );
+		// @todo: Create a specific field for this / use image from article
+		if (!empty($data->image))
+		{
+			$post['image'] = $data->image;
+		}
 
-        try {
-            $response = $linkedin->share('new', $content, false);
-        } catch (Exception $e) {
-            $response = array(
-                'error' => $e->getMessage(),
-                'debug' => $linkedin->debugInfo,
-            );
-        }
+		// @todo: Replace /feed/ with /milestones/ (title, description, start_time)
+		$apiUrl = '/me/feed';
 
-        return $response;
-    }
+		if (!empty($data->page))
+		{
+			$pageToken = null;
+			$accounts = $facebook->api('/me/accounts');
 
-    /**
-     * Generic method to post a message
-     *
-     * @access public
-     * @param array $data
-     * @return string
-     */
-    public function post($data)
-    {
-        // Set default variables
-        $rt = false;
-        $post_state = 0;
-        $post_id = array();
-        $post_error = array();
+			if (!empty($accounts['data']))
+			{
+				foreach ($accounts['data'] as $account)
+				{
+					if ($account['id'] == $data->page)
+					{
+						$pageToken = $account['access_token'];
+					}
+				}
+			}
 
-        // Prepare the data a bit more
-        if(empty($data->title)) $data->title = $data->category_name;
+			if (!empty($pageToken))
+			{
+				unset($post['actions']);
+				$apiUrl = '/' . $data->page . '/feed?access_token=' . $pageToken;
+			}
+		}
 
-        // Loop through the accounts
-        if(!empty($data->accounts)) {
-            foreach($data->accounts as $account) {
+		$result = $facebook->api($apiUrl, 'post', $post);
 
-                // Merge the data with the account
-                $params = YireoHelper::toRegistry($account->params);
-                $account->page = $params->get('page');
-                $account = (object)array_merge((array)$account, (array)$data);
-                unset($account->accounts);
-                unset($account->account_id);
+		return $result;
+	}
 
-                // Post the data
-                switch($account->type) {
-                    case 'facebook':
-                        try {
-                            $response = $this->postFacebook($account);
-                        } catch(Exception $e) {
-                            $exception = $e->getMessage();
-                        }
-                        break;
+	/**
+	 * Method to post a Linkedin-message
+	 *
+	 * @access public
+	 *
+	 * @param array $data
+	 *
+	 * @return string
+	 */
+	public function postLinkedin($data)
+	{
+		// Get the object
+		$linkedin = TweetschedulerHelper::getLinkedin($data);
 
-                    case 'linkedin':
-                        try {
-                            $response = $this->postLinkedin($account);
-                        } catch(Exception $e) {
-                            $exception = $e->getMessage();
-                        }
-                        break;
+		// Post the data
+		$content = array('title' => $data->title, 'description' => $data->message, 'submitted-url' => $data->category_url);
 
-                    default:
-                        try {
-                            $response = $this->postTwitter($account);
-                        } catch(Exception $e) {
-                            $exception = $e->getMessage();
-                        }
-                        break;
-                }
+		try
+		{
+			$response = $linkedin->share('new', $content, false);
+		}
+		catch (Exception $e)
+		{
+			$response = array('error' => $e->getMessage(), 'debug' => $linkedin->debugInfo,);
+		}
 
-                // Set the variables
-                if (!empty($response['id'])) {
-                    $post_state = 1;
-                    $post_id[] = $response['id'];
-                    $rt = true;
+		return $response;
+	}
 
-                } elseif (!empty($response['success']) && $response['success'] == 1) {
-                    $post_state = 1;
-                    $rt = true;
+	/**
+	 * Generic method to post a message
+	 *
+	 * @access public
+	 *
+	 * @param array $data
+	 *
+	 * @return string
+	 */
+	public function post($data)
+	{
+		// Set default variables
+		$rt = false;
+		$post_state = 0;
+		$post_id = array();
+		$post_error = array();
 
-                } else if (!empty($response['error'])) {
-                    $post_state = 2;
-                    $post_error[] = $response['error'];
+		// Prepare the data a bit more
+		if (empty($data->title))
+		{
+			$data->title = $data->category_name;
+		}
 
-                } elseif(!empty($response['errors'][0]['message'])) {
-                    $post_state = 2;
-                    $post_error[] = $response['errors'][0]['message'];
+		// Loop through the accounts
+		if (!empty($data->accounts))
+		{
+			foreach ($data->accounts as $account)
+			{
+				// Merge the data with the account
+				$params = YireoHelper::toRegistry($account->params);
+				$account->page = $params->get('page');
+				$account = (object) array_merge((array) $account, (array) $data);
+				unset($account->accounts);
+				unset($account->account_id);
 
-                } elseif(!empty($exception)) {
-                    $post_state = 2;
-                    $post_error[] = 'Exception: '.$exception;
+				// Post the data
+				switch ($account->type)
+				{
+					case 'facebook':
+						try
+						{
+							$response = $this->postFacebook($account);
+						}
+						catch (Exception $e)
+						{
+							$exception = $e->getMessage();
+						}
+						break;
 
-                } else {
-                    $post_state = 2;
-                    $post_error[] = 'Unknown response';
-                }
-            }
-        }
+					case 'linkedin':
+						try
+						{
+							$response = $this->postLinkedin($account);
+						}
+						catch (Exception $e)
+						{
+							$exception = $e->getMessage();
+						}
+						break;
 
-        // Update the state
+					default:
+						try
+						{
+							$response = $this->postTwitter($account);
+						}
+						catch (Exception $e)
+						{
+							$exception = $e->getMessage();
+						}
+						break;
+				}
+
+				// Set the variables
+				if (!empty($response['id']))
+				{
+					$post_state = 1;
+					$post_id[] = $response['id'];
+					$rt = true;
+
+				}
+				elseif (!empty($response['success']) && $response['success'] == 1)
+				{
+					$post_state = 1;
+					$rt = true;
+
+				}
+				else
+				{
+					if (!empty($response['error']))
+					{
+						$post_state = 2;
+						$post_error[] = $response['error'];
+
+					}
+					elseif (!empty($response['errors'][0]['message']))
+					{
+						$post_state = 2;
+						$post_error[] = $response['errors'][0]['message'];
+
+					}
+					elseif (!empty($exception))
+					{
+						$post_state = 2;
+						$post_error[] = 'Exception: ' . $exception;
+
+					}
+					else
+					{
+						$post_state = 2;
+						$post_error[] = 'Unknown response';
+					}
+				}
+			}
+		}
+
+		// Update the state
 		$this->updateState($data->id, $post_state, $post_id, $post_error);
 
-        // Duplicate this tweet
-        if($rt == true && !empty($data->params)) {
-            $params = YireoHelper::toRegistry($data->params);
-            $reschedule = $params->get('reschedule');
-            if(!empty($reschedule)) {
-                $this->duplicate($data, $reschedule);
-            }
-        }
+		// Duplicate this tweet
+		if ($rt == true && !empty($data->params))
+		{
+			$params = YireoHelper::toRegistry($data->params);
+			$reschedule = $params->get('reschedule');
 
-        if(empty($response)) {
-            if(!empty($exception)) {
-                return array('error' => $e->getMessage());
-            } else {
-                return array('error' => 'Empty response');
-            }
-        }
+			if (!empty($reschedule))
+			{
+				$this->duplicate($data, $reschedule);
+			}
+		}
 
-        return $response;
-    }
+		if (empty($response))
+		{
+			if (!empty($exception))
+			{
+				return array('error' => $e->getMessage());
+			}
+			else
+			{
+				return array('error' => 'Empty response');
+			}
+		}
+
+		return $response;
+	}
 
 	public function updateState($id, $post_state, $post_id, $post_error = null)
 	{
 		$db = JFactory::getDBO();
 		$post_state = (int) $post_state;
 
-		if(is_array($post_id))
+		if (is_array($post_id))
 		{
 			$post_id = $db->Quote(implode('|', $post_id));
 		}
 
-		if(is_array($post_error))
+		if (is_array($post_error))
 		{
 			$post_error = implode('|', $post_error);
 		}
 
 		$post_error = $db->Quote($post_error);
 
-		$fields = array(
-			$db->quoteName('post_state') . '=' . $post_state,
-			$db->quoteName('post_id') . '=' . $post_id,
-			$db->quoteName('post_error') . '=' . $post_error,
-		);
+		$fields = array($db->quoteName('post_state') . '=' . $post_state, $db->quoteName('post_id') . '=' . $post_id, $db->quoteName('post_error') . '=' . $post_error);
 
-		$conditions = array(
-			$db->quoteName('id') . '=' . (int) $id
-		);
+		$conditions = array($db->quoteName('id') . '=' . (int) $id);
 
 		$query = $db->getQuery(true);
 		$query->update($db->quoteName('#__tweetscheduler_tweets'))->set($fields)->where($conditions);
@@ -366,75 +428,81 @@ class TweetschedulerModelTweet extends YireoModel
 	}
 
 
-    /**
-     * Method to duplicate a message
-     *
-     * @access public
-     * @param array $data
-     * @param string $reschedule
-     * @return boolean
-     */
-    public function duplicate($data, $reschedule)
-    {
-        $model = new self;
-        $model->setId(0);
+	/**
+	 * Method to duplicate a message
+	 *
+	 * @access public
+	 *
+	 * @param array  $data
+	 * @param string $reschedule
+	 *
+	 * @return boolean
+	 */
+	public function duplicate($data, $reschedule)
+	{
+		$model = new self;
+		$model->setId(0);
 
-        $old_post_date = $data->post_date;
-        $new_post_date = TweetschedulerHelper::getRescheduleTime($old_post_date, $reschedule);
+		$old_post_date = $data->post_date;
+		$new_post_date = TweetschedulerHelper::getRescheduleTime($old_post_date, $reschedule);
 
-        $data->id = 0;
-        $data->post_date = $new_post_date;
+		$data->id = 0;
+		$data->post_date = $new_post_date;
 
-        $data = JArrayHelper::fromObject($data);
-        $data['params'] = array(
-            'reschedule' => $reschedule,
-        );
-        return $model->store($data);
-    }
+		$data = JArrayHelper::fromObject($data);
+		$data['params'] = array('reschedule' => $reschedule,);
 
-    /**
-     * Method to automatically spread a set of tweets
-     *
-     * @access public
-     * @param array $ids
-     * @return bool
-     */
-    public function autospread($ids)
-    {
-        // Load the current tweets from the database and shuffle them
-        $db = JFactory::getDBO();
-        $query = 'SELECT id, category_id, message FROM #__tweetscheduler_tweets WHERE published = 1 AND post_state = 0 AND id in ('.implode(',', $ids).')';
-        $db->setQuery($query);
-        $tweets = $db->loadObjectList();
-        shuffle($tweets);
+		return $model->store($data);
+	}
 
-        // @todo: Autospread options
-        $minimumPerDay = 1;
-        $maximumPerDay = 4;
-        $startTime = strtotime(date('Y-m-d'));
-        $startTime = $startTime + (60*60*24); // 1 day from now
+	/**
+	 * Method to automatically spread a set of tweets
+	 *
+	 * @access public
+	 *
+	 * @param array $ids
+	 *
+	 * @return bool
+	 */
+	public function autospread($ids)
+	{
+		// Load the current tweets from the database and shuffle them
+		$db = JFactory::getDBO();
+		$query = 'SELECT id, category_id, message FROM #__tweetscheduler_tweets WHERE published = 1 AND post_state = 0 AND id in (' . implode(',', $ids) . ')';
+		$db->setQuery($query);
+		$tweets = $db->loadObjectList();
+		shuffle($tweets);
 
-        $count = 0;
-        $averagePerDay = rand($minimumPerDay, $maximumPerDay);
-        foreach($tweets as $tweet) {
+		// @todo: Autospread options
+		$minimumPerDay = 1;
+		$maximumPerDay = 4;
+		$startTime = strtotime(date('Y-m-d'));
+		$startTime = $startTime + (60 * 60 * 24); // 1 day from now
 
-            // Add a day for every X posts
-            if($count % $averagePerDay == 0) {
-                $averagePerDay = rand($minimumPerDay, $maximumPerDay);
-                $startTime = $startTime + (60*60*24);
-            }
+		$count = 0;
+		$averagePerDay = rand($minimumPerDay, $maximumPerDay);
 
-            // Randomize the time
-            $randomSeconds = rand(0, (60*60*24));
-            $post_date = date('Y-m-d H:i:s', $startTime + $randomSeconds);
+		foreach ($tweets as $tweet)
+		{
 
-            // Update the tweet
-            $db->setQuery('UPDATE #__tweetscheduler_tweets SET `post_date`='.$db->Quote($post_date).' WHERE `id`='.$tweet->id);
-            $db->query();
+			// Add a day for every X posts
+			if ($count % $averagePerDay == 0)
+			{
+				$averagePerDay = rand($minimumPerDay, $maximumPerDay);
+				$startTime = $startTime + (60 * 60 * 24);
+			}
 
-            $count++;
-        }
+			// Randomize the time
+			$randomSeconds = rand(0, (60 * 60 * 24));
+			$post_date = date('Y-m-d H:i:s', $startTime + $randomSeconds);
 
-        return true;
-    }
+			// Update the tweet
+			$db->setQuery('UPDATE #__tweetscheduler_tweets SET `post_date`=' . $db->Quote($post_date) . ' WHERE `id`=' . $tweet->id);
+			$db->execute();
+
+			$count++;
+		}
+
+		return true;
+	}
 }

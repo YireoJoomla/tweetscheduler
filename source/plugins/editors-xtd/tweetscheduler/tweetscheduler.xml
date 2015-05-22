@@ -2,11 +2,11 @@
 <extension version="2.5" type="plugin" group="editors-xtd" method="upgrade">
     <name>PLG_EDITORS-XTD_TWEETSCHEDULER</name>
     <author>Yireo</author>
-    <creationDate>May 2014</creationDate>
+    <creationDate>May 2015</creationDate>
     <license>http://www.gnu.org/copyleft/gpl.html GNU/GPL</license>
     <authorEmail>info@yireo.com</authorEmail>
     <authorUrl>http://www.yireo.com/</authorUrl>
-    <version>0.2.18</version>
+    <version>0.2.21</version>
     <description>PLG_EDITORS-XTD_TWEETSCHEDULER_DESC</description>
 
     <files>
