@@ -45,7 +45,7 @@ class TweetschedulerController extends YireoController
 	public function redirectAuthorize()
 	{
 		// Set the view manually
-		JRequest::setVar('view', 'account');
+		JFactory::getApplication()->input->set('view', 'account');
 
 		// Fetch the model-data
 		$model = $this->_loadModel();
@@ -206,7 +206,7 @@ class TweetschedulerController extends YireoController
 		}
 
 		// Set the view manually
-		JRequest::setVar('view', 'account');
+		JFactory::getApplication()->input->set('view', 'account');
 
 		// Load the saved data
 		$db = JFactory::getDBO();
@@ -539,7 +539,7 @@ class TweetschedulerController extends YireoController
 	public function autospread()
 	{
 		// Security check
-		JRequest::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
+		JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
 
 		// Get the ID-list
 		$cid = $this->getIds();

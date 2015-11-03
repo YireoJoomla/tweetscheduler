@@ -125,7 +125,7 @@ jQuery(window).load(function() {
             <td width="100" align="right" class="key"><?php echo JText::_('COM_TWEETSCHEDULER_FIELDNAME_MESSAGE'); ?>:</td>
             <td class="value">
                 <textarea name="message" id="message" rows="5" cols="60"><?php echo $this->item->message; ?></textarea><br/>
-                <span id="messageInfo" class="hint"><span id="charsLeft"><?php echo strlen($this->item->message); ?></span>/<?php echo $max_chars; ?> chars <span id="messageWarning"></span></span>
+                <span id="messageInfo" class="hint"><span id="charsLeft"><?php echo YireoHelper::strlen($this->item->message); ?></span>/<?php echo $max_chars; ?> chars <span id="messageWarning"></span></span>
             </td>
         </tr>
         <tr>

@@ -31,7 +31,7 @@ if($item->post_state == 1) {
     </div>
 </td>
 <td>
-    <?php echo strlen($item->message); ?>
+    <?php echo YireoHelper::strlen($item->message); ?>
 </td>
 <td class="small">
     <?php echo $item->category_name; ?>

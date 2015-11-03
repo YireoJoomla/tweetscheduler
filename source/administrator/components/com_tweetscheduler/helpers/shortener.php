@@ -36,7 +36,7 @@ class TweetschedulerHelperShortener
     static public function autoshortenUrl($url)
     {
         // Don't modify anything unless the URL is longer than X characters
-        if (strlen($url) < 30) return $url;
+        if (YireoHelper::strlen($url) < 30) return $url;
 
         // Loop through the shorteners, trying to shorten this URL
         $newUrl = null;

@@ -71,7 +71,7 @@ class TableTweet extends YireoTable
         }
 
         // Check whether the message does not exceed the maximum 
-        $too_many_chars = 140 - strlen($this->message);
+        $too_many_chars = 140 - YireoHelper::strlen($this->message);
         if($too_many_chars < 0) {
 			$this->_error = sprintf('Message exceeds maximum length by %d characters', 0 - $too_many_chars);
             return false;
