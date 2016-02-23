@@ -44,6 +44,48 @@ class TweetschedulerViewHome extends YireoViewHome
 
         JToolBarHelper::custom('updateQueries', 'archive', '', 'DB Upgrade', false);
 
+        $this->graphdays = 30;
+        $this->graphdata = $this->getGraphData($this->graphdays);
+
         parent::display($tpl);
+    }
+
+    public function getGraphData($count)
+    {
+        $db = JFactory::getDBO();
+        $query = $db->getQuery(true);
+        $query->select('DATE(post_date) AS date');
+        $query->from('#__tweetscheduler_tweets');
+        $query->where($db->quoteName('published').'=1');
+        $query->where($db->quoteName('post_date').' BETWEEN NOW() AND
+NOW() + INTERVAL '.$count.' DAY');
+        $query->orderby($db->quoteName('post_date'));
+
+        $db->setQuery($query);
+        $rows = $db->loadObjectList();
+
+        $data = array();
+
+        foreach($rows as $row) {
+            if (!isset($data[$row->date])) {
+                $data[$row->date] = 0;
+            }
+
+            $data[$row->date]++;
+        }
+
+        $days = array();
+        $days[] = array('Day', 'Count');
+
+        for($i = 0; $i < 30; $i++) {
+            $day = date('Y-m-d', strtotime('+'.$i . ' day'));
+            if (isset($data[$day])) {
+                $days[] = array($day, $data[$day]);
+            } else {
+                $days[] = array($day, 0);
+            }
+        }
+
+        return $days;
     }
 }

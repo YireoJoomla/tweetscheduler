@@ -12,25 +12,22 @@ defined('_JEXEC') or die('Restricted access');
 ?>
 <div class="well">
 <div class="chart-container">
-    <h3>Post statistics of upcoming 30 days</h3>
     <div id="chart"></div>
 </div>
 </div>
 
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 <script>
-var data = [<?php echo implode(', ', $this->graphdata); ?>];
+google.charts.load('current', {'packages':['corechart']});
+      google.charts.setOnLoadCallback(drawChart);
+      function drawChart() {
+        var data = google.visualization.arrayToDataTable(<?php echo json_encode($this->graphdata); ?>);
+        var options = {
+            title: 'Scheduled tweets for upcoming <?php echo $this->graphdays ?> days',
+            legend: {position: 'none'}
+        };
 
-jQuery.noConflict();
-jQuery(function($) {
-    $.jqplot('chart', [data], {
-        axes:{
-            xaxis:{
-                renderer:$.jqplot.DateAxisRenderer,
-                tickOptions:{formatString:'%#d'},
-                tickInterval:'1 day'
-            }
-        },
-        series:[{showMarker:false}],
-    });
-});
+        var chart = new google.visualization.AreaChart(document.getElementById('chart'));
+        chart.draw(data, options);
+      }
 </script>
