@@ -68,7 +68,7 @@ function parse<?php echo ucfirst($shortenerCode); ?>(old_value, element_id) {
                 <label for="url"><?php echo JText::_( 'URL' ); ?>:</label>
             </td>
             <td class="value">
-                <input type="text" name="url" value="<?php echo $this->item->url; ?>" id="url" size="60" />
+                <input type="text" name="url" value="<?php echo $this->item->url; ?>" id="url" size="60" /><br/>
                 <?php foreach($this->shorteners as $shortenerCode => $shortener) { ?>
                 <input type="button" class="button" onClick="parse<?php echo ucfirst($shortenerCode); ?>($('url').value, 'url');" value="<?php echo $shortener->getTitle(); ?>" />
                 <?php } ?>

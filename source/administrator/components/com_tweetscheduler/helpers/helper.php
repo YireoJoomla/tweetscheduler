@@ -163,7 +163,7 @@ class TweetschedulerHelper
 	 * @param boolean $include_null
 	 * @return array
 	 */
-	static public function getAccountOptions($include_null = false)
+	static public function getAccountOptions($include_null = false, $include_none = true)
 	{
 		$db = JFactory::getDBO();
 		$db->setQuery('SELECT `title`, `type`, `id` AS `value` FROM #__tweetscheduler_accounts WHERE `published`=1 ORDER BY ordering');
@@ -176,6 +176,11 @@ class TweetschedulerHelper
 
 		$option = (object) array('title' => '-- ' . JText::_('JNONE') . ' --', 'value' => 0);
 		array_unshift($rows, $option);
+
+        if ($include_null) {
+            $option = (object)array('title' => '-- '.JText::_('JSELECT').' --', 'value' => -1);
+            array_unshift($rows, $option);
+        }
 
 		if ($include_null)
 		{

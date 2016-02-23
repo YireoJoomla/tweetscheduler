@@ -68,6 +68,9 @@ class TweetschedulerModelTweet extends YireoModel
 		$post_date = new JDate($data['post_date'], $timezone);
 		$data['post_date'] = $post_date->format('Y-m-d H:i:s', false, false);
 
+        $session = JFactory::getSession();
+        $session->set('tweetscheduler.post_date', $post_date);
+
 		// Set UTC flag
 		$data['utc'] = 1;
 

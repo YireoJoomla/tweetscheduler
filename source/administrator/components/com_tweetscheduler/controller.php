@@ -592,6 +592,9 @@ class TweetschedulerController extends YireoController
 		$post_date_output .= ' (' . TweetschedulerHelper::getRelativeTime($post_date) . ')';
 		echo json_encode(array('post_date' => $post_date_output));
 
+        $session = JFactory::getSession();
+        $session->set('tweetscheduler.post_date', $post_date);
+
 		$application->close();
 		exit;
 	}

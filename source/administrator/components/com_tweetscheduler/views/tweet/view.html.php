@@ -50,8 +50,15 @@ class TweetschedulerViewTweet extends YireoViewForm
 		$options = TweetschedulerHelper::getCategoryOptions(true);
 		$this->lists['category_id'] = JHTML::_('select.genericlist', $options, 'category_id', null, 'value', 'title', $this->item->category_id);
 
-		$options = TweetschedulerHelper::getAccountOptions();
-		$this->lists['account_id'] = JHTML::_('select.genericlist', $options, 'account_id[]', 'multiple="multiple"', 'value', 'title', $this->item->account_id);
+        $accountOptions = TweetschedulerHelper::getAccountOptions();
+        $currentAccount = $this->item->account_id;
+        if (empty($currentAccount)) {
+            $bareAccountOptions = TweetschedulerHelper::getAccountOptions(false, false);
+            if (count($bareAccountOptions) == 1) {
+                $currentAccount = $bareAccountOptions[0]->value;
+            }
+        }
+        $this->lists['account_id'] = JHTML::_('select.genericlist', $accountOptions, 'account_id[]', 'multiple="multiple"', 'value', 'title', $currentAccount);
 
 		$this->lists['post_date'] = JHTML::_('calendar', $this->item->post_date, 'post_date', 'post_date', '%Y-%m-%d %H:%M:%S', array('class' => 'inputbox'));
 
