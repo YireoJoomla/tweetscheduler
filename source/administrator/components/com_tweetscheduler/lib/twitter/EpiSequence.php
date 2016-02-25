@@ -1,7 +1,4 @@
 <?php
-// Check to ensure this file is included in Joomla!
-defined('_JEXEC') or die();
-
 class EpiSequence
 {
   private $timers, $min, $max, $width = 100;

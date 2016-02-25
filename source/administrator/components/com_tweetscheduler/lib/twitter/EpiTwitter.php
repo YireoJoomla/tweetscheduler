@@ -1,7 +1,4 @@
 <?php
-// Check to ensure this file is included in Joomla!
-defined('_JEXEC') or die();
-
 /*
  *  Class to integrate with Twitter's API.
  *    Authenticated calls are done using OAuth and require access tokens for a user.
@@ -22,11 +19,14 @@ class EpiTwitter extends EpiOAuth
   protected $authorizeUrl   = 'https://api.twitter.com/oauth/authorize';
   protected $authenticateUrl= 'https://api.twitter.com/oauth/authenticate';
   protected $apiUrl         = 'https://api.twitter.com';
-  protected $apiVersionedUrl= 'https://api.twitter.com';
-  protected $searchUrl      = 'https://search.twitter.com';
   protected $userAgent      = 'EpiTwitter (http://github.com/jmathai/twitter-async/tree/)';
   protected $apiVersion     = '1.1';
   protected $isAsynchronous = false;
+  /**
+   * The Twitter API version 1.0 search URL.
+   * @var string
+   */
+  protected $searchUrl      = 'http://search.twitter.com';
 
   /* OAuth methods */
   public function delete($endpoint, $params = null)
@@ -60,6 +60,11 @@ class EpiTwitter extends EpiOAuth
     return $this->request_basic('POST', $endpoint, $params, $username, $password);
   }
 
+  public function useApiUrl($url = '')
+  {
+    $this->apiUrl = rtrim( $url, '/' );
+  }
+
   public function useApiVersion($version = null)
   {
     $this->apiVersion = $version;
@@ -81,7 +86,7 @@ class EpiTwitter extends EpiOAuth
     $parts  = explode('_', $name);
     $method = strtoupper(array_shift($parts));
     $parts  = implode('_', $parts);
-    $endpoint   = '/' . preg_replace('/[A-Z]|[0-9]+/e', "'/'.strtolower('\\0')", $parts) . '.json';
+    $endpoint   = '/' . preg_replace_callback('/[A-Z]|[0-9]+/', function($m){ return '/' . strtolower($m[0]);}, $parts) . '.json';
     /* HACK: this is required for list support that starts with a user id */
     $endpoint = str_replace('//','/',$endpoint);
     $args = !empty($params) ? array_shift($params) : null;
@@ -106,12 +111,12 @@ class EpiTwitter extends EpiOAuth
 
   private function getApiUrl($endpoint)
   {
-    if(preg_match('@^/search[./]?(?=(json|daily|current|weekly))@', $endpoint))
-      return "{$this->searchUrl}{$endpoint}";
-    elseif(!empty($this->apiVersion))
-      return "{$this->apiVersionedUrl}/{$this->apiVersion}{$endpoint}";
-    else
-      return "{$this->apiUrl}{$endpoint}";
+    if ($this->apiVersion === '1' && preg_match('@^/search[./]?(?=(json|daily|current|weekly))@', $endpoint))
+    {
+      return $this->searchUrl.$endpoint;
+    }
+
+    return $this->apiUrl.'/'.$this->apiVersion.$endpoint;
   }
 
   private function request($method, $endpoint, $params = null)
