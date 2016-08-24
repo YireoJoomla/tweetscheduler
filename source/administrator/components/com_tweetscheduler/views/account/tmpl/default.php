@@ -1,11 +1,11 @@
 <?php
-/*
+/**
  * Joomla! component Tweetscheduler
  *
  * @author Yireo (info@yireo.com)
- * @copyright Copyright 2015
+ * @copyright Copyright 2016
  * @license GNU Public License
- * @link http://www.yireo.com
+ * @link https://www.yireo.com
  */
 
 // Check to ensure this file is included in Joomla!
@@ -79,7 +79,7 @@ defined('_JEXEC') or die('Restricted access');
 <input type="hidden" name="option" value="com_tweetscheduler" />
 <input type="hidden" name="cid[]" value="<?php echo $this->item->id; ?>" />
 <input type="hidden" name="task" value="" />
-<?php echo JHTML::_( 'form.token' ); ?>
+<?php echo JHtml::_( 'form.token' ); ?>
 </form>
 
 <?php if(!empty($this->pages)) : ?>

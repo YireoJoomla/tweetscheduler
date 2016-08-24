@@ -3,9 +3,9 @@
  * Joomla! component Tweetscheduler
  *
  * @author Yireo (info@yireo.com)
- * @copyright Copyright 2015
+ * @copyright Copyright 2016
  * @license GNU Public License
- * @link http://www.yireo.com
+ * @link https://www.yireo.com
  */
 
 // Check to ensure this file is included in Joomla!
@@ -16,7 +16,7 @@ defined('_JEXEC') or die();
  */
 class TweetschedulerViewTweet extends YireoViewForm
 {
-	/*
+	/**
 	 * Display method
 	 *
 	 * @param string $tpl
@@ -28,7 +28,7 @@ class TweetschedulerViewTweet extends YireoViewForm
 		YireoHelper::jquery();
 
 		// Load additional scripts
-		$this->document->addScript(JURI::root() . 'media/com_tweetscheduler/js/backend.js');
+		$this->doc->addScript(JUri::root() . 'media/com_tweetscheduler/js/backend.js');
 
 		// Load the item
 		$this->fetchItem();
@@ -47,20 +47,25 @@ class TweetschedulerViewTweet extends YireoViewForm
 			$this->item->account_id = TweetschedulerHelper::getDefaultAccountId();
 		}
 
-		$options = TweetschedulerHelper::getCategoryOptions(true);
-		$this->lists['category_id'] = JHTML::_('select.genericlist', $options, 'category_id', null, 'value', 'title', $this->item->category_id);
+		$options                    = TweetschedulerHelper::getCategoryOptions(true);
+		$this->lists['category_id'] = JHtml::_('select.genericlist', $options, 'category_id', null, 'value', 'title', $this->item->category_id);
 
-        $accountOptions = TweetschedulerHelper::getAccountOptions();
-        $currentAccount = $this->item->account_id;
-        if (empty($currentAccount)) {
-            $bareAccountOptions = TweetschedulerHelper::getAccountOptions(false, false);
-            if (count($bareAccountOptions) == 1) {
-                $currentAccount = $bareAccountOptions[0]->value;
-            }
-        }
-        $this->lists['account_id'] = JHTML::_('select.genericlist', $accountOptions, 'account_id[]', 'multiple="multiple"', 'value', 'title', $currentAccount);
+		$accountOptions = TweetschedulerHelper::getAccountOptions();
+		$currentAccount = $this->item->account_id;
 
-		$this->lists['post_date'] = JHTML::_('calendar', $this->item->post_date, 'post_date', 'post_date', '%Y-%m-%d %H:%M:%S', array('class' => 'inputbox'));
+		if (empty($currentAccount))
+		{
+			$bareAccountOptions = TweetschedulerHelper::getAccountOptions(false, false);
+
+			if (count($bareAccountOptions) == 1)
+			{
+				$currentAccount = $bareAccountOptions[0]->value;
+			}
+		}
+
+		$this->lists['account_id'] = JHtml::_('select.genericlist', $accountOptions, 'account_id[]', 'multiple="multiple"', 'value', 'title', $currentAccount);
+
+		$this->lists['post_date'] = JHtml::_('calendar', $this->item->post_date, 'post_date', 'post_date', '%Y-%m-%d %H:%M:%S', array('class' => 'inputbox'));
 
 		$this->lists['categories'] = TweetschedulerHelper::getCategoryOptions();
 
@@ -76,8 +81,8 @@ class TweetschedulerViewTweet extends YireoViewForm
 	public function loadArticle()
 	{
 		// Check for the right parameters
-		$form = JRequest::getCmd('formname');
-		$asset = JRequest::getInt('asset');
+		$form  = $this->input->getCmd('formname');
+		$asset = $this->input->getInt('asset');
 
 		if ($form != 'jform_articletext' || $asset > 0 == false)
 		{
@@ -85,9 +90,18 @@ class TweetschedulerViewTweet extends YireoViewForm
 		}
 
 		// Load the article
-		$db = JFactory::getDBO();
+		$db    = JFactory::getDbo();
 		$query = $db->getQuery(true);
-		$query->select(array('a.`id`', 'a.`title`', 'a.`alias`', 'a.`introtext`', 'a.`catid`', 'c.`alias` AS catalias'));
+
+		$query->select(array(
+				'a.`id`',
+				'a.`title`',
+				'a.`alias`',
+				'a.`introtext`',
+				'a.`catid`',
+				'c.`alias` AS catalias'
+			));
+
 		$query->from('`#__content` AS a');
 		$query->join('inner', '#__categories AS c ON c.id = a.catid');
 		$query->where($db->quoteName('a.asset_id') . ' = ' . $asset);
@@ -102,8 +116,9 @@ class TweetschedulerViewTweet extends YireoViewForm
 
 		// Enter the details
 		$this->item->title = $article->title;
-		$slug = $article->id . ':' . $article->alias;
-		$catslug = $article->catid . ':' . $article->catalias;;
+		$slug              = $article->id . ':' . $article->alias;
+		$catslug           = $article->catid . ':' . $article->catalias;
+
 		$link = $this->getFrontendUrl($slug, $catslug);
 
 		require_once JPATH_COMPONENT . '/helpers/shortener.php';
@@ -115,12 +130,19 @@ class TweetschedulerViewTweet extends YireoViewForm
 		return true;
 	}
 
+	/**
+	 * @param $title
+	 * @param $introtext
+	 * @param $url
+	 *
+	 * @return string
+	 */
 	public function getMessageText($title, $introtext, $url)
 	{
 		// Fetch parameters
-		$params = JComponentHelper::getComponent('com_tweetscheduler')->params;
+		$params        = JComponentHelper::getComponent('com_tweetscheduler')->params;
 		$article_parts = $params->get('article_parts');
-		$introtext = strip_tags($introtext);
+		$introtext     = strip_tags($introtext);
 
 		// Maximum chars in 1 tweet
 		$maxChars = 140;
@@ -155,23 +177,23 @@ class TweetschedulerViewTweet extends YireoViewForm
 
 		if ($article_parts == 'tu')
 		{
-			$title = substr($title, 0, $availableChars);
+			$title   = substr($title, 0, $availableChars);
 			$message = $prefix . ' ' . $title . ' ' . $url . ' ' . $suffix;
 		}
 		elseif ($article_parts == 'ut')
 		{
-			$title = substr($title, 0, $availableChars);
+			$title   = substr($title, 0, $availableChars);
 			$message = $prefix . ' ' . $url . ' ' . $title . ' ' . $suffix;
 		}
 		elseif ($article_parts == 'bu')
 		{
 			$introtext = substr($introtext, 0, $availableChars);
-			$message = $prefix . ' ' . $url . ' ' . $introtext . ' ' . $suffix;
+			$message   = $prefix . ' ' . $url . ' ' . $introtext . ' ' . $suffix;
 		}
 		elseif ($article_parts == 'ub')
 		{
 			$introtext = substr($introtext, 0, $availableChars);
-			$message = $prefix . ' ' . $introtext . ' ' . $url . ' ' . $suffix;
+			$message   = $prefix . ' ' . $introtext . ' ' . $url . ' ' . $suffix;
 		}
 
 		$message = trim($message);
@@ -179,19 +201,25 @@ class TweetschedulerViewTweet extends YireoViewForm
 		return $message;
 	}
 
+	/**
+	 * @param $slug
+	 * @param $catslug
+	 *
+	 * @return mixed|string
+	 */
 	public function getFrontendUrl($slug, $catslug)
 	{
 		require_once JPATH_SITE . '/components/com_content/helpers/route.php';
 		$url = ContentHelperRoute::getArticleRoute($slug, $catslug);
 
 		JFactory::$application = JApplication::getInstance('site');
-		$app = JApplication::getInstance('site');
+		$app                   = JApplication::getInstance('site');
 
 		$router = $app->getRouter();
-		$uri = $router->build($url);
-		$url = $uri->toString(array('path', 'query', 'fragment'));
-		$url = str_replace('/administrator/', '', $url);
-		$url = JURI::root() . $url;
+		$uri    = $router->build($url);
+		$url    = $uri->toString(array('path', 'query', 'fragment'));
+		$url    = str_replace('/administrator/', '', $url);
+		$url    = JUri::root() . $url;
 
 		JFactory::$application = JApplication::getInstance('administrator');
 

@@ -3,9 +3,9 @@
  * Joomla! component Tweetscheduler
  *
  * @author Yireo (info@yireo.com)
- * @copyright Copyright Yireo.com 2015
+ * @copyright Copyright Yireo.com 2016
  * @license GNU Public License
- * @link http://www.yireo.com
+ * @link https://www.yireo.com
  */
 
 namespace Yireo\Tweetscheduler\Model\Service\Contracts;
@@ -13,7 +13,7 @@ namespace Yireo\Tweetscheduler\Model\Service\Contracts;
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
-/*
+/**
  * Tweetscheduler service-contract for acting as a data-container
  */
 interface Data

@@ -3,9 +3,9 @@
     <name>COM_TWEETSCHEDULER</name>
     <author>Yireo</author>
     <authoremail>info@yireo.com</authoremail>
-    <authorurl>http://www.yireo.com</authorurl>
+    <authorurl>https://www.yireo.com</authorurl>
     <creationDate>May 2015</creationDate>
-    <copyright>Copyright 2015 Yireo.com. All rights reserved.</copyright>
+    <copyright>Copyright 2016 Yireo.com. All rights reserved.</copyright>
     <license>http://www.gnu.org/licenses/gpl-3.0.html GNU/GPL</license>
     <version>0.2.21</version>
     <description>COM_TWEETSCHEDULER_DESC</description>
@@ -75,6 +75,6 @@
     </media>
 
     <updateservers>
-        <server type="extension" priority="1" name="com_tweetscheduler">http://www.yireo.com/updates/com_tweetscheduler.xml</server>
+        <server type="extension" priority="1" name="com_tweetscheduler">https://www.yireo.com/updates/com_tweetscheduler.xml</server>
     </updateservers>
 </extension>

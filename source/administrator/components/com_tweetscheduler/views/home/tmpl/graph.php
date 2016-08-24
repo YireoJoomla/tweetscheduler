@@ -2,10 +2,10 @@
 /*
  * Joomla! TweetScheduler
  *
- * @author Yireo (http://www.yireo.com/)
- * @copyright Copyright 2015
+ * @author Yireo (https://www.yireo.com/)
+ * @copyright Copyright 2016
  * @license GNU Public License
- * @link http://www.yireo.com/
+ * @link https://www.yireo.com/
  */
 
 defined('_JEXEC') or die('Restricted access');

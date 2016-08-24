@@ -1,11 +1,11 @@
 <?php
-/*
+/**
  * Joomla! component Tweetscheduler
  *
  * @author Yireo (info@yireo.com)
- * @copyright Copyright 2015
+ * @copyright Copyright 2016
  * @license GNU Public License
- * @link http://www.yireo.com
+ * @link https://www.yireo.com
  */
 
 // Check to ensure this file is included in Joomla!
@@ -16,16 +16,16 @@ defined('_JEXEC') or die();
  */
 class TweetschedulerViewCategories extends YireoViewList
 {
-    /*
-     * Display method
-     *
-     * @param string $tpl
-     * @return null
-     */
-    public function display($tpl = null)
-    {
-        $this->setTitle('Categories');
-        parent::display($tpl);
-    }
+	/**
+	 * Display method
+	 *
+	 * @param string $tpl
+	 * @return mixed
+	 */
+	public function display($tpl = null)
+	{
+		$this->setTitle('Categories');
+		return parent::display($tpl);
+	}
 }
 

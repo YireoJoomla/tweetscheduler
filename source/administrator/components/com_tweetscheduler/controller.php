@@ -3,9 +3,9 @@
  * Joomla! component Tweetscheduler
  *
  * @author Yireo (info@yireo.com)
- * @copyright Copyright 2015
+ * @copyright Copyright 2016
  * @license GNU Public License
- * @link http://www.yireo.com
+ * @link https://www.yireo.com
  */
 
 // Check to ensure this file is included in Joomla!
@@ -49,12 +49,12 @@ class TweetschedulerController extends YireoController
 
 		// Fetch the model-data
 		$model = $this->_loadModel();
-		$data = $model->getData();
+		$data  = $model->getData();
 
 		// If the consumer_key and/or consumer_secret are not valid, redirect to the form
 		if (empty($data->consumer_key) || empty($data->consumer_secret))
 		{
-			$this->msg = 'No consumer-key and consumer-secret configured';
+			$this->msg      = 'No consumer-key and consumer-secret configured';
 			$this->msg_type = 'error';
 			$this->doRedirect('accounts');
 
@@ -80,7 +80,7 @@ class TweetschedulerController extends YireoController
 		if ($rt == false)
 		{
 			$this->msg_type = 'error';
-			$this->msg = $service->getMessage();
+			$this->msg      = $service->getMessage();
 
 			if (empty($this->msg))
 			{
@@ -111,14 +111,17 @@ class TweetschedulerController extends YireoController
 		{
 			case 'facebook':
 				include_once JPATH_COMPONENT_ADMINISTRATOR . '/models/service/facebook.php';
+
 				return new Yireo\Tweetscheduler\Model\Service\Facebook;
 
 			case 'linkedin':
 				include_once JPATH_COMPONENT_ADMINISTRATOR . '/models/service/linkedin.php';
+
 				return new Yireo\Tweetscheduler\Model\Service\Linkedin;
 
 			default:
 				include_once JPATH_COMPONENT_ADMINISTRATOR . '/models/service/twitter.php';
+
 				return new Yireo\Tweetscheduler\Model\Service\Twitter;
 				break;
 		}
@@ -143,8 +146,8 @@ class TweetschedulerController extends YireoController
 			return false;
 		}
 
-		$data = $model->getData();
-		$data->oauth_token = '';
+		$data                     = $model->getData();
+		$data->oauth_token        = '';
 		$data->oauth_token_secret = '';
 
 		$model->store($data);
@@ -209,13 +212,13 @@ class TweetschedulerController extends YireoController
 		JFactory::getApplication()->input->set('view', 'account');
 
 		// Load the saved data
-		$db = JFactory::getDBO();
+		$db = JFactory::getDbo();
 		$db->setQuery('SELECT * FROM #__tweetscheduler_accounts WHERE oauth_token=' . $db->Quote($oauth_token));
 		$data = $db->loadObject();
 
 		if (empty($data))
 		{
-			$this->msg = 'No data found for OAuth-token "' . $oauth_token . '"';
+			$this->msg      = 'No data found for OAuth-token "' . $oauth_token . '"';
 			$this->msg_type = 'error';
 			$this->doRedirect('accounts');
 
@@ -227,7 +230,7 @@ class TweetschedulerController extends YireoController
 
 		if (empty($model))
 		{
-			$this->msg = 'Empty model';
+			$this->msg      = 'Empty model';
 			$this->msg_type = 'error';
 			$this->doRedirect('accounts');
 
@@ -246,7 +249,7 @@ class TweetschedulerController extends YireoController
 
 		// Add the new data to the model-data
 		$data->oauth_token_secret = $token->oauth_token_secret;
-		$data->oauth_token = $token->oauth_token;
+		$data->oauth_token        = $token->oauth_token;
 
 		// Insert the new access-token
 		$twitter->setToken($token->oauth_token, $token->oauth_token_secret);
@@ -254,7 +257,7 @@ class TweetschedulerController extends YireoController
 		// Save the token in the model
 		if ($model->store((array) $data) == false)
 		{
-			$this->msg = $model->getError();
+			$this->msg      = $model->getError();
 			$this->msg_type = 'error';
 			$this->doRedirect('accounts');
 
@@ -283,7 +286,7 @@ class TweetschedulerController extends YireoController
 
 		if (empty($model))
 		{
-			$this->msg = 'Empty model';
+			$this->msg      = 'Empty model';
 			$this->msg_type = 'error';
 			$this->doRedirect('accounts');
 
@@ -295,7 +298,7 @@ class TweetschedulerController extends YireoController
 
 		if (empty($data))
 		{
-			$this->msg = 'Empty data';
+			$this->msg      = 'Empty data';
 			$this->msg_type = 'error';
 			$this->doRedirect('accounts');
 
@@ -371,7 +374,7 @@ class TweetschedulerController extends YireoController
 		}
 
 		// Fetch the response
-		$response = $twitterInfo->response;
+		$response        = $twitterInfo->response;
 		$twitter_account = $twitterInfo->screen_name;
 
 		// Give feedback to the Joomla! application
@@ -430,7 +433,7 @@ class TweetschedulerController extends YireoController
 		$linkedin = TweetschedulerHelper::getLinkedin($data);
 
 		// Fetch personal information
-		$url = 'http://api.linkedin.com/v1/people/~?format=json';
+		$url      = 'http://api.linkedin.com/v1/people/~?format=json';
 		$response = $linkedin->fetch('GET', $url);
 
 		// Give feedback to the Joomla! application
@@ -452,7 +455,7 @@ class TweetschedulerController extends YireoController
 			}
 			else
 			{
-				$user = $data['firstName'] . ' ' . $data['lastName'];
+				$user      = $data['firstName'] . ' ' . $data['lastName'];
 				$this->msg = JText::sprintf('Linkedin-account is set to "%s"', $user);
 			}
 		}
@@ -467,7 +470,7 @@ class TweetschedulerController extends YireoController
 	{
 		// Fetch the model-data
 		$model = $this->_loadModel();
-		$data = $model->getData();
+		$data  = $model->getData();
 
 		// Post the tweet
 		$response = TweetschedulerHelper::post($data);
@@ -475,7 +478,7 @@ class TweetschedulerController extends YireoController
 		// Give feedback to the Joomla! application
 		if (empty($response))
 		{
-			$this->msg = JText::_('Update failed');
+			$this->msg      = JText::_('Update failed');
 			$this->msg_type = 'error';
 
 		}
@@ -483,13 +486,13 @@ class TweetschedulerController extends YireoController
 		{
 			if (!empty($response['error']))
 			{
-				$this->msg = JText::sprintf('Update failed: %s', $response['error']);
+				$this->msg      = JText::sprintf('Update failed: %s', $response['error']);
 				$this->msg_type = 'error';
 
 			}
 			elseif (!empty($response['errors'][0]['message']))
 			{
-				$this->msg = JText::sprintf('Update failed: %s', $response['errors'][0]['message']);
+				$this->msg      = JText::sprintf('Update failed: %s', $response['errors'][0]['message']);
 				$this->msg_type = 'error';
 
 			}
@@ -513,7 +516,7 @@ class TweetschedulerController extends YireoController
 
 		// Redirect
 		$link = 'index.php?option=com_tweetscheduler&view=home';
-		$msg = JText::_('Applied database upgrades');
+		$msg  = JText::_('Applied database upgrades');
 		$this->setRedirect($link, $msg);
 	}
 
@@ -523,13 +526,13 @@ class TweetschedulerController extends YireoController
 	public function deletePosted()
 	{
 		// Run the update-queries
-		$db = JFactory::getDBO();
+		$db = JFactory::getDbo();
 		$db->setQuery('DELETE FROM #__tweetscheduler_tweets WHERE `post_state`=1');
 		$db->execute();
 
 		// Redirect
 		$link = 'index.php?option=com_tweetscheduler&view=tweets';
-		$msg = JText::_('Cleaned all posted tweets');
+		$msg  = JText::_('Cleaned all posted tweets');
 		$this->setRedirect($link, $msg);
 	}
 
@@ -554,7 +557,7 @@ class TweetschedulerController extends YireoController
 		$model->autospread($cid);
 
 		$link = 'index.php?option=com_tweetscheduler&view=tweets';
-		$msg = JText::_('Automatically spreaded selected tweets');
+		$msg  = JText::_('Automatically spreaded selected tweets');
 		$this->setRedirect($link, $msg);
 	}
 
@@ -565,35 +568,38 @@ class TweetschedulerController extends YireoController
 	{
 		// Get variables
 		$application = JFactory::getApplication();
-		$input = $application->input;
+		$input       = $application->input;
 
 		// Get input
-		$tweet_id = $input->getInt('id');
+		$tweet_id  = $input->getInt('id');
 		$post_date = $input->getString('post_date');
 
 		// Convert date to proper timezone
-		$timezone = TweetschedulerHelper::getTimezone();
+		$timezone  = TweetschedulerHelper::getTimezone();
 		$post_date = new JDate($post_date, $timezone);
 		$post_date = $post_date->format('Y-m-d H:i:s', false, false);
 
 		// Modify the tweet in the database
-		$db = JFactory::getDBO();
+		$db    = JFactory::getDbo();
 		$query = $db->getQuery(true);
-		$query->update($db->quoteName('#__tweetscheduler_tweets'))->set($db->quoteName('post_date') . '=' . $db->quote($post_date))->set($db->quoteName('utc') . '=1')->where($db->quoteName('id') . '=' . $tweet_id);
+		$query->update($db->quoteName('#__tweetscheduler_tweets'))
+			->set($db->quoteName('post_date') . '=' . $db->quote($post_date))
+			->set($db->quoteName('utc') . '=1')
+			->where($db->quoteName('id') . '=' . $tweet_id);
 		$db->setQuery($query);
 		$db->execute();
 
 		// Output
-		$timezone = TweetschedulerHelper::getTimezone();
+		$timezone  = TweetschedulerHelper::getTimezone();
 		$post_date = new JDate($post_date);
 		$post_date->setTimezone($timezone);
-		$post_date = $post_date->format('Y-m-d H:i', $timezone);
+		$post_date        = $post_date->format('Y-m-d H:i', $timezone);
 		$post_date_output = TweetschedulerHelper::formatDatetime($post_date);
 		$post_date_output .= ' (' . TweetschedulerHelper::getRelativeTime($post_date) . ')';
 		echo json_encode(array('post_date' => $post_date_output));
 
-        $session = JFactory::getSession();
-        $session->set('tweetscheduler.post_date', $post_date);
+		$session = JFactory::getSession();
+		$session->set('tweetscheduler.post_date', $post_date);
 
 		$application->close();
 		exit;

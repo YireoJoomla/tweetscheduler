@@ -3,18 +3,17 @@
  * Joomla! component Tweetscheduler
  *
  * @author Yireo (info@yireo.com)
- * @copyright Copyright Yireo.com 2013
+ * @copyright Copyright Yireo.com 2016
  * @license GNU Public License
- * @link http://www.yireo.com
+ * @link https://www.yireo.com
  */
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
-/*
+/**
  * Tweetscheduler Tweet model
  */
-
 class TweetschedulerModelTweet extends YireoModel
 {
 	/**
@@ -26,12 +25,6 @@ class TweetschedulerModelTweet extends YireoModel
 
 	/**
 	 * Constructor method
-	 *
-	 * @access public
-	 *
-	 * @param null
-	 *
-	 * @return null
 	 */
 	public function __construct()
 	{
@@ -40,9 +33,6 @@ class TweetschedulerModelTweet extends YireoModel
 
 	/**
 	 * Method to store the model
-	 *
-	 * @access     public
-	 * @subpackage Yireo
 	 *
 	 * @param mixed $data
 	 *
@@ -64,12 +54,12 @@ class TweetschedulerModelTweet extends YireoModel
 		}
 
 		// Convert date to proper timezone
-		$timezone = TweetschedulerHelper::getTimezone();
-		$post_date = new JDate($data['post_date'], $timezone);
+		$timezone          = TweetschedulerHelper::getTimezone();
+		$post_date         = new JDate($data['post_date'], $timezone);
 		$data['post_date'] = $post_date->format('Y-m-d H:i:s', false, false);
 
-        $session = JFactory::getSession();
-        $session->set('tweetscheduler.post_date', $post_date);
+		$session = JFactory::getSession();
+		$session->set('tweetscheduler.post_date', $post_date);
 
 		// Set UTC flag
 		$data['utc'] = 1;
@@ -79,10 +69,6 @@ class TweetschedulerModelTweet extends YireoModel
 
 	/**
 	 * Override buildQuery method
-	 *
-	 * @access protected
-	 *
-	 * @param null
 	 *
 	 * @return string
 	 */
@@ -99,8 +85,6 @@ class TweetschedulerModelTweet extends YireoModel
 	/**
 	 * Method to modify the data once it is loaded
 	 *
-	 * @access protected
-	 *
 	 * @param array $data
 	 *
 	 * @return array
@@ -114,15 +98,18 @@ class TweetschedulerModelTweet extends YireoModel
 
 		if (!empty($data->account_id))
 		{
-			$db = JFactory::getDBO();
-			$query = 'SELECT * FROM #__tweetscheduler_accounts WHERE `id` IN (' . implode(',', $data->account_id) . ')';
+			$db    = JFactory::getDbo();
+			$query = $db->getQuery(true);
+			$query->select('*');
+			$query->from($db->quoteName('#__tweetscheduler_accounts'));
+			$query->where($db->quoteName('id') . ' IN (' . implode(',', $data->account_id) . ')');
 			$db->setQuery($query);
 			$data->accounts = $db->loadObjectList();
 		}
 
 		if (isset($data->utc) && $data->utc == 1)
 		{
-			$timezone = TweetschedulerHelper::getTimezone();
+			$timezone  = TweetschedulerHelper::getTimezone();
 			$post_date = new JDate($data->post_date);
 			$post_date->setTimezone($timezone);
 			$data->post_date = $post_date->format('Y-m-d H:i', $timezone);
@@ -133,8 +120,6 @@ class TweetschedulerModelTweet extends YireoModel
 
 	/**
 	 * Method to post a twitter-message
-	 *
-	 * @access public
 	 *
 	 * @param array $data
 	 *
@@ -151,7 +136,8 @@ class TweetschedulerModelTweet extends YireoModel
 			$twitterInfo = $twitter->post_statusesUpdate(array('status' => $data->message));
 
 			return $twitterInfo->response;
-		} catch (Exception $e)
+		}
+		catch (Exception $e)
 		{
 			return array('error' => $e->getMessage());
 		}
@@ -159,8 +145,6 @@ class TweetschedulerModelTweet extends YireoModel
 
 	/**
 	 * Method to post a facebook-message
-	 *
-	 * @access public
 	 *
 	 * @param array $data
 	 *
@@ -170,7 +154,7 @@ class TweetschedulerModelTweet extends YireoModel
 	{
 		// Get the object
 		$facebook = TweetschedulerHelper::getFacebook($data);
-		$user = $facebook->getUser();
+		$user     = $facebook->getUser();
 
 		if (!$user > 0)
 		{
@@ -202,7 +186,7 @@ class TweetschedulerModelTweet extends YireoModel
 		if (!empty($data->page))
 		{
 			$pageToken = null;
-			$accounts = $facebook->api('/me/accounts');
+			$accounts  = $facebook->api('/me/accounts');
 
 			if (!empty($accounts['data']))
 			{
@@ -230,8 +214,6 @@ class TweetschedulerModelTweet extends YireoModel
 	/**
 	 * Method to post a Linkedin-message
 	 *
-	 * @access public
-	 *
 	 * @param array $data
 	 *
 	 * @return string
@@ -242,7 +224,11 @@ class TweetschedulerModelTweet extends YireoModel
 		$linkedin = TweetschedulerHelper::getLinkedin($data);
 
 		// Post the data
-		$content = array('title' => $data->title, 'description' => $data->message, 'submitted-url' => $data->category_url);
+		$content = array(
+			'title'         => $data->title,
+			'description'   => $data->message,
+			'submitted-url' => $data->category_url
+		);
 
 		try
 		{
@@ -259,8 +245,6 @@ class TweetschedulerModelTweet extends YireoModel
 	/**
 	 * Generic method to post a message
 	 *
-	 * @access public
-	 *
 	 * @param array $data
 	 *
 	 * @return string
@@ -268,9 +252,9 @@ class TweetschedulerModelTweet extends YireoModel
 	public function post($data)
 	{
 		// Set default variables
-		$rt = false;
+		$rt         = false;
 		$post_state = 0;
-		$post_id = array();
+		$post_id    = array();
 		$post_error = array();
 
 		// Prepare the data a bit more
@@ -285,9 +269,9 @@ class TweetschedulerModelTweet extends YireoModel
 			foreach ($data->accounts as $account)
 			{
 				// Merge the data with the account
-				$params = YireoHelper::toRegistry($account->params);
+				$params        = YireoHelper::toRegistry($account->params);
 				$account->page = $params->get('page');
-				$account = (object) array_merge((array) $account, (array) $data);
+				$account       = (object) array_merge((array) $account, (array) $data);
 				unset($account->accounts);
 				unset($account->account_id);
 
@@ -332,39 +316,39 @@ class TweetschedulerModelTweet extends YireoModel
 				if (!empty($response['id']))
 				{
 					$post_state = 1;
-					$post_id[] = $response['id'];
-					$rt = true;
+					$post_id[]  = $response['id'];
+					$rt         = true;
 
 				}
 				elseif (!empty($response['success']) && $response['success'] == 1)
 				{
 					$post_state = 1;
-					$rt = true;
+					$rt         = true;
 
 				}
 				else
 				{
 					if (!empty($response['error']))
 					{
-						$post_state = 2;
+						$post_state   = 2;
 						$post_error[] = $response['error'];
 
 					}
 					elseif (!empty($response['errors'][0]['message']))
 					{
-						$post_state = 2;
+						$post_state   = 2;
 						$post_error[] = $response['errors'][0]['message'];
 
 					}
 					elseif (!empty($exception))
 					{
-						$post_state = 2;
+						$post_state   = 2;
 						$post_error[] = 'Exception: ' . $exception;
 
 					}
 					else
 					{
-						$post_state = 2;
+						$post_state   = 2;
 						$post_error[] = 'Unknown response';
 					}
 				}
@@ -377,7 +361,7 @@ class TweetschedulerModelTweet extends YireoModel
 		// Duplicate this tweet
 		if ($rt == true && !empty($data->params))
 		{
-			$params = YireoHelper::toRegistry($data->params);
+			$params     = YireoHelper::toRegistry($data->params);
 			$reschedule = $params->get('reschedule');
 
 			if (!empty($reschedule))
@@ -401,14 +385,20 @@ class TweetschedulerModelTweet extends YireoModel
 		return $response;
 	}
 
+	/**
+	 * @param      $id
+	 * @param      $post_state
+	 * @param      $post_id
+	 * @param null $post_error
+	 */
 	public function updateState($id, $post_state, $post_id, $post_error = null)
 	{
-		$db = JFactory::getDBO();
+		$db         = JFactory::getDbo();
 		$post_state = (int) $post_state;
 
 		if (is_array($post_id))
 		{
-			$post_id = $db->Quote(implode('|', $post_id));
+			$post_id = implode('|', $post_id);
 		}
 
 		if (is_array($post_error))
@@ -416,25 +406,28 @@ class TweetschedulerModelTweet extends YireoModel
 			$post_error = implode('|', $post_error);
 		}
 
-		$post_error = $db->Quote($post_error);
+		$post_id    = $db->quote($post_id);
+		$post_error = $db->quote($post_error);
 
-		$fields = array($db->quoteName('post_state') . '=' . $post_state, $db->quoteName('post_id') . '=' . $post_id, $db->quoteName('post_error') . '=' . $post_error);
+		$fields = array(
+			$db->quoteName('post_state') . '=' . $post_state,
+			$db->quoteName('post_id') . '=' . $post_id,
+			$db->quoteName('post_error') . '=' . $post_error
+		);
 
 		$conditions = array($db->quoteName('id') . '=' . (int) $id);
 
 		$query = $db->getQuery(true);
-		$query->update($db->quoteName('#__tweetscheduler_tweets'))->set($fields)->where($conditions);
+		$query->update($db->quoteName('#__tweetscheduler_tweets'))
+			->set($fields)
+			->where($conditions);
 
 		$db->setQuery($query);
-		echo $query;
 		$db->execute();
 	}
 
-
 	/**
 	 * Method to duplicate a message
-	 *
-	 * @access public
 	 *
 	 * @param array  $data
 	 * @param string $reschedule
@@ -449,10 +442,10 @@ class TweetschedulerModelTweet extends YireoModel
 		$old_post_date = $data->post_date;
 		$new_post_date = TweetschedulerHelper::getRescheduleTime($old_post_date, $reschedule);
 
-		$data->id = 0;
+		$data->id        = 0;
 		$data->post_date = $new_post_date;
 
-		$data = JArrayHelper::fromObject($data);
+		$data           = JArrayHelper::fromObject($data);
 		$data['params'] = array('reschedule' => $reschedule,);
 
 		return $model->store($data);
@@ -461,8 +454,6 @@ class TweetschedulerModelTweet extends YireoModel
 	/**
 	 * Method to automatically spread a set of tweets
 	 *
-	 * @access public
-	 *
 	 * @param array $ids
 	 *
 	 * @return bool
@@ -470,8 +461,13 @@ class TweetschedulerModelTweet extends YireoModel
 	public function autospread($ids)
 	{
 		// Load the current tweets from the database and shuffle them
-		$db = JFactory::getDBO();
-		$query = 'SELECT id, category_id, message FROM #__tweetscheduler_tweets WHERE published = 1 AND post_state = 0 AND id in (' . implode(',', $ids) . ')';
+		$db    = JFactory::getDbo();
+		$query = $db->getQuery(true);
+		$query->select($db->quoteName(['id', 'category_id', 'message']));
+		$query->from($db->quoteName('#__tweetscheduler_tweets'));
+		$query->where($db->quoteName('published') . '=1');
+		$query->where($db->quoteName('post_state') . '=1');
+		$query->where($db->quoteName('id') . ' IN (' . implode(',', $ids) . ')');
 		$db->setQuery($query);
 		$tweets = $db->loadObjectList();
 		shuffle($tweets);
@@ -479,29 +475,30 @@ class TweetschedulerModelTweet extends YireoModel
 		// @todo: Autospread options
 		$minimumPerDay = 1;
 		$maximumPerDay = 4;
-		$startTime = strtotime(date('Y-m-d'));
-		$startTime = $startTime + (60 * 60 * 24); // 1 day from now
+		$startTime     = strtotime(date('Y-m-d'));
+		$startTime     = $startTime + (60 * 60 * 24);
 
-		$count = 0;
+		$count         = 0;
 		$averagePerDay = rand($minimumPerDay, $maximumPerDay);
 
 		foreach ($tweets as $tweet)
 		{
-
 			// Add a day for every X posts
 			if ($count % $averagePerDay == 0)
 			{
 				$averagePerDay = rand($minimumPerDay, $maximumPerDay);
-				$startTime = $startTime + (60 * 60 * 24);
+				$startTime     = $startTime + (60 * 60 * 24);
 			}
 
 			// Randomize the time
 			$randomSeconds = rand(0, (60 * 60 * 24));
-			$post_date = date('Y-m-d H:i:s', $startTime + $randomSeconds);
+			$post_date     = date('Y-m-d H:i:s', $startTime + $randomSeconds);
 
 			// Update the tweet
-			$db->setQuery('UPDATE #__tweetscheduler_tweets SET `post_date`=' . $db->Quote($post_date) . ' WHERE `id`=' . $tweet->id);
-			$db->execute();
+			$object            = new stdClass;
+			$object->post_date = $db->quote($post_date);
+			$object->id        = (int) $tweet->id;
+			$db->updateObject('#__tweetscheduler_tweets', $object, 'id');
 
 			$count++;
 		}

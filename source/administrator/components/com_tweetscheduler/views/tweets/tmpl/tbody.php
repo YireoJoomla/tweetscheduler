@@ -3,9 +3,9 @@
  * Joomla! component Tweetscheduler
  *
  * @author Yireo
- * @copyright Copyright 2015
+ * @copyright Copyright 2016
  * @license GNU Public License
- * @link http://www.yireo.com/
+ * @link https://www.yireo.com/
  */
 
 // Check to ensure this file is included in Joomla!
@@ -57,7 +57,7 @@ if($item->post_state == 1) {
         (<?php echo TweetschedulerHelper::getRelativeTime($item->raw_post_date, $item->utc); ?>)
     </div>
     <div class="post_date_edit" id="post_date_edit_<?php echo $item->id; ?>">
-        <?php echo JHTML::_('calendar', $item->post_date, 'post_date['.$item->id.']', 'post_date_'.$item->id, 
+        <?php echo JHtml::_('calendar', $item->post_date, 'post_date['.$item->id.']', 'post_date_'.$item->id, 
             '%Y-%m-%d %H:%M:%S', array('class' => 'inputbox')); ?>
         <button class="btn" onclick="modifyPostDate('post_date_edit_<?php echo $item->id; ?>');return false;">
             <?php echo JText::_('JAPPLY'); ?>

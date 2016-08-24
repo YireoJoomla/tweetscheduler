@@ -2,41 +2,61 @@
 /**
  * Joomla! component Tweetscheduler
  *
- * @author Yireo (info@yireo.com)
- * @copyright Copyright 2015
- * @license GNU Public License
- * @link http://www.yireo.com
+ * @author    Yireo (info@yireo.com)
+ * @copyright Copyright 2016
+ * @license   GNU Public License
+ * @link      https://www.yireo.com
  */
 
 // No direct access
-defined( '_JEXEC' ) or die( 'Restricted access' );
-        
+defined('_JEXEC') or die('Restricted access');
+
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
-// Include the loader
-require_once JPATH_COMPONENT.'/lib/loader.php';
+// Load the Yireo library
+jimport('yireo.loader');
+
+// Check for helper
+if (!class_exists('YireoHelperInstall'))
+{
+	require_once JPATH_COMPONENT . '/helpers/yireo/install.php';
+	YireoHelperInstall::getInstance()->autoInstallLibrary('yireo', 'https://www.yireo.com/documents/lib_yireo_j3x.zip', 'Yireo Library');
+	$application = JFactory::getApplication();
+	$application->redirect('index.php?option=com_installer');
+	$application->close();
+}
+
+// Check for function
+if (!class_exists('\Yireo\System\Autoloader'))
+{
+	die('Yireo Library is not installed and could not be installed automatically');
+}
 
 // Load the libraries
-require_once JPATH_COMPONENT_ADMINISTRATOR.'/helpers/helper.php';
+require_once JPATH_COMPONENT_ADMINISTRATOR . '/helpers/helper.php';
 
 // Make sure the user is authorised to view this page
-$application = JFactory::getApplication();
-$user = JFactory::getUser();
+$input = JFactory::getApplication()->input;
+$user  = JFactory::getUser();
 
 // Require the current controller
-$view = JRequest::getCmd('view');
-$controller_file = JPATH_COMPONENT.'/controllers/'.$view.'.php';
-if(is_file($controller_file)) {
-    require_once $controller_file; 
-    $controller_name = 'TweetschedulerController'.ucfirst($view);
-    $controller = new $controller_name();
-} else {
-    require_once 'controller.php';
-    $controller = new TweetschedulerController();
+$view           = $input->getCmd('view');
+$controllerFile = JPATH_COMPONENT . '/controllers/' . $view . '.php';
+
+if (is_file($controllerFile))
+{
+	require_once $controllerFile;
+	$controllerName = 'TweetschedulerController' . ucfirst($view);
+	$controller     = new $controllerName;
+}
+else
+{
+	require_once 'controller.php';
+	$controller = new TweetschedulerController;
 }
 
 // Perform the requested task
-$controller->execute(JRequest::getCmd('task'));
+$controller->execute($input->getCmd('task'));
 $controller->redirect();
 

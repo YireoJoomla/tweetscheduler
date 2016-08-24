@@ -3,9 +3,9 @@
  * Joomla! component Tweetscheduler
  *
  * @author Yireo (info@yireo.com)
- * @copyright Copyright Yireo.com 2015
+ * @copyright Copyright Yireo.com 2016
  * @license GNU Public License
- * @link http://www.yireo.com
+ * @link https://www.yireo.com
  */
 
 namespace Yireo\Tweetscheduler\Model\Service;
@@ -16,7 +16,7 @@ defined('_JEXEC') or die();
 include_once __DIR__ . '/contracts/data.php';
 include_once __DIR__ . '/contracts/authorize.php';
 
-/*
+/**
  * Tweetscheduler abstract service-model
  */
 class Generic  implements Contracts\Authorize, Contracts\Data

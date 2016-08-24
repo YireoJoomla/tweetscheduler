@@ -3,9 +3,9 @@
  * Joomla! component Tweetscheduler
  *
  * @author Yireo (info@yireo.com)
- * @copyright Copyright Yireo.com 2015
+ * @copyright Copyright Yireo.com 2016
  * @license GNU Public License
- * @link http://www.yireo.com
+ * @link https://www.yireo.com
  */
 
 namespace Yireo\Tweetscheduler\Model\Service;

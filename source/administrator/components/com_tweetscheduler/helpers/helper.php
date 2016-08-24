@@ -3,9 +3,9 @@
  * Joomla! component Tweetscheduler
  *
  * @author    Yireo
- * @copyright Copyright 2015
+ * @copyright Copyright 2016
  * @license   GNU Public License
- * @link      http://www.yireo.com/
+ * @link      https://www.yireo.com/
  */
 
 // Check to ensure this file is included in Joomla!
@@ -101,14 +101,21 @@ class TweetschedulerHelper
 		// Initialize the API
 		TweetschedulerHelper::initLinkedinApi();
 
-		$config = array('appKey' => $data->consumer_key, 'appSecret' => $data->consumer_secret, 'callbackUrl' => $_SERVER['REQUEST_URI'],);
+		$config = array(
+			'appKey'      => $data->consumer_key,
+			'appSecret'   => $data->consumer_secret,
+			'callbackUrl' => $_SERVER['REQUEST_URI'],
+		);
 
 		$linkedin = new LinkedIn($config);
 		$linkedin->setResponseFormat('JSON');
 		$response = $linkedin->retrieveTokenRequest();
 
 		//$oauth = new OAuthConsumer($data->consumer_key, $data->consumer_secret);
-		$linkedin->setToken(array('oauth_token' => $data->oauth_token, 'oauth_token_secret' => $data->oauth_token_secret));
+		$linkedin->setToken(array(
+			'oauth_token'        => $data->oauth_token,
+			'oauth_token_secret' => $data->oauth_token_secret
+		));
 
 		return $linkedin;
 	}
@@ -132,11 +139,12 @@ class TweetschedulerHelper
 	 * Fetch a list of categories
 	 *
 	 * @param boolean $include_null
+	 *
 	 * @return array
 	 */
 	static public function getCategoryOptions($include_null = false)
 	{
-		$db = JFactory::getDBO();
+		$db = JFactory::getDbo();
 		$db->setQuery('SELECT `title`,`id` AS `value`,`url`,`params` FROM #__tweetscheduler_categories ORDER BY ordering');
 		$rows = $db->loadObjectList();
 
@@ -145,7 +153,12 @@ class TweetschedulerHelper
 			$row->params = YireoHelper::toParameter($row->params);
 		}
 
-		$option = (object) array('title' => '-- ' . JText::_('JNONE') . ' --', 'value' => 0, 'url' => null, 'params' => null,);
+		$option = (object) array(
+			'title'  => '-- ' . JText::_('JNONE') . ' --',
+			'value'  => 0,
+			'url'    => null,
+			'params' => null,
+		);
 		array_unshift($rows, $option);
 
 		if ($include_null)
@@ -161,26 +174,28 @@ class TweetschedulerHelper
 	 * Fetch a list of accounts
 	 *
 	 * @param boolean $include_null
+	 *
 	 * @return array
 	 */
 	static public function getAccountOptions($include_null = false, $include_none = true)
 	{
-		$db = JFactory::getDBO();
+		$db = JFactory::getDbo();
 		$db->setQuery('SELECT `title`, `type`, `id` AS `value` FROM #__tweetscheduler_accounts WHERE `published`=1 ORDER BY ordering');
 		$rows = $db->loadObjectList();
 		foreach ($rows as $rowIndex => $row)
 		{
-			$row->title = $row->title . ' [' . $row->type . ']';
+			$row->title      = $row->title . ' [' . $row->type . ']';
 			$rows[$rowIndex] = $row;
 		}
 
 		$option = (object) array('title' => '-- ' . JText::_('JNONE') . ' --', 'value' => 0);
 		array_unshift($rows, $option);
 
-        if ($include_null) {
-            $option = (object)array('title' => '-- '.JText::_('JSELECT').' --', 'value' => -1);
-            array_unshift($rows, $option);
-        }
+		if ($include_null)
+		{
+			$option = (object) array('title' => '-- ' . JText::_('JSELECT') . ' --', 'value' => -1);
+			array_unshift($rows, $option);
+		}
 
 		if ($include_null)
 		{
@@ -220,9 +235,11 @@ class TweetschedulerHelper
 	 */
 	static public function getAccounts()
 	{
-		$db = JFactory::getDbo();
+		$db    = JFactory::getDbo();
 		$query = $db->getQuery(true);
-		$query->select($db->quoteName(array('id', 'title', 'type', 'params')))->from($db->quoteName('#__tweetscheduler_accounts'))->order($db->quoteName('ordering'));
+		$query->select($db->quoteName(array('id', 'title', 'type', 'params')))
+			->from($db->quoteName('#__tweetscheduler_accounts'))
+			->order($db->quoteName('ordering'));
 
 		$db->setQuery($query);
 		$rows = $db->loadObjectList();
@@ -234,11 +251,16 @@ class TweetschedulerHelper
 	 * Fetch a list of types
 	 *
 	 * @param boolean $include_null
+	 *
 	 * @return array
 	 */
 	static public function getTypeOptions($include_null = false)
 	{
-		$rows = array(array('title' => JText::_('Twitter'), 'value' => 'twitter'), array('title' => JText::_('Facebook'), 'value' => 'facebook'), array('title' => JText::_('LinkedIn'), 'value' => 'linkedin'),);
+		$rows = array(
+			array('title' => JText::_('Twitter'), 'value' => 'twitter'),
+			array('title' => JText::_('Facebook'), 'value' => 'facebook'),
+			array('title' => JText::_('LinkedIn'), 'value' => 'linkedin'),
+		);
 
 		if ($include_null)
 		{
@@ -253,11 +275,16 @@ class TweetschedulerHelper
 	 * Fetch a list of states
 	 *
 	 * @param null
+	 *
 	 * @return null
 	 */
 	static public function getStateOptions()
 	{
-		$rows = array(array('title' => JText::_('Any'), 'value' => -1), array('title' => JText::_('Unpublished'), 'value' => 0), array('title' => JText::_('Published'), 'value' => 1),);
+		$rows = array(
+			array('title' => JText::_('Any'), 'value' => -1),
+			array('title' => JText::_('Unpublished'), 'value' => 0),
+			array('title' => JText::_('Published'), 'value' => 1),
+		);
 
 		return $rows;
 	}
@@ -266,11 +293,17 @@ class TweetschedulerHelper
 	 * Fetch a list of accounts
 	 *
 	 * @param string $tpl
+	 *
 	 * @return null
 	 */
 	static public function getPostStateOptions($include_null = false)
 	{
-		$rows = array(array('title' => JText::_('COM_TWEETSCHEDULER_FIELDNAME_POST_STATE_0'), 'value' => 0), array('title' => JText::_('COM_TWEETSCHEDULER_FIELDNAME_POST_STATE_1'), 'value' => 1), array('title' => JText::_('COM_TWEETSCHEDULER_FIELDNAME_POST_STATE_2'), 'value' => 2), array('title' => JText::_('COM_TWEETSCHEDULER_FIELDNAME_POST_STATE_3'), 'value' => 3),);
+		$rows = array(
+			array('title' => JText::_('COM_TWEETSCHEDULER_FIELDNAME_POST_STATE_0'), 'value' => 0),
+			array('title' => JText::_('COM_TWEETSCHEDULER_FIELDNAME_POST_STATE_1'), 'value' => 1),
+			array('title' => JText::_('COM_TWEETSCHEDULER_FIELDNAME_POST_STATE_2'), 'value' => 2),
+			array('title' => JText::_('COM_TWEETSCHEDULER_FIELDNAME_POST_STATE_3'), 'value' => 3),
+		);
 
 		if ($include_null)
 		{
@@ -285,6 +318,7 @@ class TweetschedulerHelper
 	 * Method to return the extra seconds for a specific string
 	 *
 	 * @param mixed $timestring
+	 *
 	 * @return string
 	 */
 	static public function getRescheduleTime($current_time, $reschedule_time)
@@ -303,14 +337,15 @@ class TweetschedulerHelper
 	 * Method to format the time
 	 *
 	 * @param mixed $timestring
+	 *
 	 * @return string
 	 */
 	static public function getRelativeTime($time, $utc = 1)
 	{
 		$utc = (bool) $utc;
 
-		$timezone = self::getTimezone();
-		$datetime = new JDate($time);
+		$timezone  = self::getTimezone();
+		$datetime  = new JDate($time);
 		$timestamp = strtotime($datetime->format('r'));
 
 		$seconds = $timestamp - time();
@@ -323,8 +358,8 @@ class TweetschedulerHelper
 		elseif ($seconds > 0)
 		{
 			$minutes = round($seconds / 60);
-			$hours = round($seconds / 60 / 60);
-			$days = round($seconds / 60 / 60 / 24);
+			$hours   = round($seconds / 60 / 60);
+			$days    = round($seconds / 60 / 60 / 24);
 			if ($minutes < 2)
 			{
 				$time_string = $minutes . ' minute';
@@ -353,8 +388,8 @@ class TweetschedulerHelper
 		else
 		{
 			$minutes = round((0 - $seconds) / 60);
-			$hours = round((0 - $seconds) / 60 / 60);
-			$days = round((0 - $seconds) / 60 / 60 / 24);
+			$hours   = round((0 - $seconds) / 60 / 60);
+			$days    = round((0 - $seconds) / 60 / 60 / 24);
 			if ($minutes < 2)
 			{
 				$time_string = $minutes . ' minute ago';
@@ -393,7 +428,8 @@ class TweetschedulerHelper
 	 */
 	static public function formatDatetime($datetime)
 	{
-		return JFactory::getDate($datetime)->format(JText::_('DATE_FORMAT_LC2'));
+		return JFactory::getDate($datetime)
+			->format(JText::_('DATE_FORMAT_LC2'));
 	}
 
 	/**
@@ -403,10 +439,12 @@ class TweetschedulerHelper
 	 */
 	static public function getTimezone()
 	{
-		$timezone = JFactory::getUser()->getParam('timezone');
+		$timezone = JFactory::getUser()
+			->getParam('timezone');
 		if (empty($timezone))
 		{
-			$timezone = JFactory::getConfig()->get('offset');
+			$timezone = JFactory::getConfig()
+				->get('offset');
 		}
 
 		return new DateTimeZone($timezone);

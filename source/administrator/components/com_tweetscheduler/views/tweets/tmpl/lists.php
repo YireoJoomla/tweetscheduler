@@ -3,15 +3,15 @@
  * Joomla! component Tweetscheduler
  *
  * @author Yireo (info@yireo.com)
- * @copyright Copyright 2015
+ * @copyright Copyright 2016
  * @license GNU Public License
- * @link http://www.yireo.com
+ * @link https://www.yireo.com
  */
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die('Restricted access');
 
-JHTML::_('behavior.modal');
+JHtml::_('behavior.modal');
 ?>
 <div style="float:left">
 <!--
@@ -22,7 +22,7 @@ JHTML::_('behavior.modal');
 </div>
 -->
 <div class="post_date_edit" id="post_date_edit_start" style="border: 2px solid #ddd; padding:10px;">
-    <?php echo $this->lists['start_post_date_filter'] = JHTML::_('calendar', '', 'start_post_date', 'start_post_date', '%Y-%m-%d', array('class' => 'inputbox')); ?><br/>
+    <?php echo $this->lists['start_post_date_filter'] = JHtml::_('calendar', '', 'start_post_date', 'start_post_date', '%Y-%m-%d', array('class' => 'inputbox')); ?><br/>
     <button class="btn" onclick="modifyPostDate('post_date_edit_start');return false;">
         <?php echo JText::_('JAPPLY'); ?>
     </button><br/>

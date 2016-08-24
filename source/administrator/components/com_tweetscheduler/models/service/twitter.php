@@ -3,9 +3,9 @@
  * Joomla! component Tweetscheduler
  *
  * @author Yireo (info@yireo.com)
- * @copyright Copyright Yireo.com 2015
+ * @copyright Copyright Yireo.com 2016
  * @license GNU Public License
- * @link http://www.yireo.com
+ * @link https://www.yireo.com
  */
 
 namespace Yireo\Tweetscheduler\Model\Service;
@@ -17,7 +17,7 @@ include_once __DIR__ . '/contracts/data.php';
 include_once __DIR__ . '/contracts/authorize.php';
 include_once __DIR__ . '/generic.php';
 
-/*
+/**
  * Tweetscheduler Twitter service-model
  */
 class Twitter extends Generic implements Contracts\Authorize, Contracts\Data
@@ -40,7 +40,7 @@ class Twitter extends Generic implements Contracts\Authorize, Contracts\Data
 		// Get the request-token
 		try
 		{
-			$token = $twitter->getRequestToken();
+			$token            = $twitter->getRequestToken();
 			$this->twitterUrl = $twitter->getAuthorizationUrl($token);
 		}
 		catch (\Exception $e)
@@ -51,7 +51,7 @@ class Twitter extends Generic implements Contracts\Authorize, Contracts\Data
 		}
 
 		// Save the token in the model
-		$this->data->oauth_token = $token->oauth_token;
+		$this->data->oauth_token        = $token->oauth_token;
 		$this->data->oauth_token_secret = $token->oauth_token_secret;
 
 		return true;

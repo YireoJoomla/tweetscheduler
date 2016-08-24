@@ -4,12 +4,12 @@
  *
  * @author Yireo (info@yireo.com)
  * @package Tweetscheduler
- * @copyright Copyright 2015
+ * @copyright Copyright 2016
  * @license GNU Public License
- * @link http://www.yireo.com
+ * @link https://www.yireo.com
  */
 
-// Check to ensure this file is included in Joomla!  
+// Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
 /**

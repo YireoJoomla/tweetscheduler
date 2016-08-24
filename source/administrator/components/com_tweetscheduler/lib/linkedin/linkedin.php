@@ -8,7 +8,7 @@ defined('_JEXEC') or die();
  * 
  * COPYRIGHT:
  *   
- * Copyright 2015, fiftyMission Inc.
+ * Copyright 2016, fiftyMission Inc.
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a 
  * copy of this software and associated documentation files (the "Software"), 
@@ -62,7 +62,7 @@ defined('_JEXEC') or die();
  *    
  * @version 3.2.0 - November 8, 2011
  * @author Paul Mennega <paul@fiftymission.net>
- * @copyright Copyright 2015, fiftyMission Inc. 
+ * @copyright Copyright 2016, fiftyMission Inc. 
  * @license http://www.opensource.org/licenses/mit-license.php The MIT License 
  */
  

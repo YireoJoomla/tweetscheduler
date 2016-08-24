@@ -3,80 +3,96 @@
  * Joomla! component Tweetscheduler
  *
  * @author Yireo (info@yireo.com)
- * @copyright Copyright 2015
+ * @copyright Copyright 2016
  * @license GNU Public License
- * @link http://www.yireo.com
+ * @link https://www.yireo.com
  */
 
 // no direct access
 defined('_JEXEC') or die('Restricted access');
 
 /**
-* Tweet Table class
-*/
-class TableTweet extends YireoTable
+ * Tweet Table class
+ */
+class TweetschedulerTableTweet extends YireoTable
 {
-    /**
-     * Constructor
-     *
-     * @access public
-     * @param JDatabase $db
-     * @return null
-     */
-    public function __construct(& $db)
-    {
-        // Initialize the fields
-        $timezone = TweetschedulerHelper::getTimezone();
-        $post_date = new JDate('now +2 hours', $timezone);
+	/**
+	 * @var string
+	 */
+	protected $message;
 
-        $this->_defaults = array(
-            'post_date' => $post_date->format('Y-m-d H:i'),
-            'utc' => 1,
-        );
+	/**
+	 * @var int
+	 */
+	protected $category_id;
 
-        // Set the required fields
-        $this->_required = array(
-            'message',
-            'account_id',
-            'category_id',
-        );
+	/**
+	 * Constructor
+	 *
+	 * @param JDatabase $db
+	 */
+	public function __construct(& $db)
+	{
+		// Initialize the fields
+		$timezone  = TweetschedulerHelper::getTimezone();
+		$post_date = new JDate('now +2 hours', $timezone);
 
-        // Call the constructor
-        parent::__construct('#__tweetscheduler_tweets', 'id', $db);
-    }
+		$this->_defaults = array(
+			'post_date' => $post_date->format('Y-m-d H:i'),
+			'utc'       => 1,
+		);
 
-    /**
-     * Overloaded check method to ensure data integrity
-     *
-     * @access public
-     * @subpackage Yireo
-     * @param null
-     * @return bool
-     */
-    public function check()
-    {
-        // Perform the parent-checks
-        $result = parent::check();
-        if($result == false) return false;
+		// Set the required fields
+		$this->_required = array(
+			'message',
+			'account_id',
+			'category_id',
+		);
 
-        // Append the category URL to this message 
-        if($this->category_id) {
-            $query = "SELECT url FROM #__tweetscheduler_categories WHERE id = ".(int)$this->category_id;
-            $db = JFactory::getDBO();
-            $db->setQuery($query);
-            $category_url = $db->loadResult();
-            if(!empty($category_url) && !strstr($this->message, $category_url)) {
-                $this->message .= ' '.$category_url;
-            }
-        }
+		// Call the constructor
+		parent::__construct('#__tweetscheduler_tweets', 'id', $db);
+	}
 
-        // Check whether the message does not exceed the maximum 
-        $too_many_chars = 140 - YireoHelper::strlen($this->message);
-        if($too_many_chars < 0) {
+	/**
+	 * Overloaded check method to ensure data integrity
+	 */
+	public function check()
+	{
+		// Perform the parent-checks
+		$result = parent::check();
+
+		if ($result === false)
+		{
+			return false;
+		}
+
+		// Append the category URL to this message
+		if ($this->category_id)
+		{
+			$db    = JFactory::getDbo();
+			$query = $db->getQuery(true);
+			$query->select($db->quoteName('url'));
+			$query->from($db->quoteName('#__tweetscheduler_categories'));
+			$query->where($db->quoteName('id') . '=' . (int) $this->category_id);
+			$db->setQuery($query);
+			$category_url = $db->loadResult();
+
+			if (!empty($category_url) && !strstr($this->message, $category_url))
+			{
+				$this->message .= ' ' . $category_url;
+			}
+		}
+
+		// Check whether the message does not exceed the maximum
+		$too_many_chars = 140 - YireoHelper::strlen($this->message);
+
+		if ($too_many_chars < 0)
+		{
 			$this->_error = sprintf('Message exceeds maximum length by %d characters', 0 - $too_many_chars);
-            return false;
-        }
 
-        return true;
-    }
+			return false;
+		}
+
+		return true;
+	}
 }
