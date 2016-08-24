@@ -19,12 +19,12 @@ class TweetschedulerTableTweet extends YireoTable
 	/**
 	 * @var string
 	 */
-	protected $message;
+	public $message;
 
 	/**
 	 * @var int
 	 */
-	protected $category_id;
+	public $category_id;
 
 	/**
 	 * Constructor
@@ -88,9 +88,7 @@ class TweetschedulerTableTweet extends YireoTable
 
 		if ($too_many_chars < 0)
 		{
-			$this->_error = sprintf('Message exceeds maximum length by %d characters', 0 - $too_many_chars);
-
-			return false;
+			throw new Exception(sprintf('Message exceeds maximum length by %d characters', 0 - $too_many_chars));
 		}
 
 		return true;

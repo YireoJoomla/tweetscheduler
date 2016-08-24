@@ -12,11 +12,19 @@
 defined('_JEXEC') or die('Restricted access');
 
 // Load the libraries
-require_once JPATH_COMPONENT_ADMINISTRATOR . '/lib/loader.php';
+// Load the Yireo library
+jimport('yireo.loader');
+
+// Check for function
+if (!class_exists('\Yireo\System\Autoloader'))
+{
+	die('Yireo Library is not installed and could not be installed automatically');
+}
+
 require_once JPATH_COMPONENT_ADMINISTRATOR . '/helpers/helper.php';
 
 // Load common variables
-$db = JFactory::getDbo();
+$db  = JFactory::getDbo();
 $app = JFactory::getApplication();
 
 // Set UTC timezone
@@ -26,7 +34,7 @@ $db->execute();
 
 // Fetch the remaining tweets
 require_once JPATH_COMPONENT_ADMINISTRATOR . '/models/tweets.php';
-$model = new TweetSchedulerModelTweets();
+$model = new TweetSchedulerModelTweets;
 $model->addWhere('tweet.post_date < NOW()');
 $model->addWhere('tweet.post_state = 0');
 $model->addWhere('tweet.published = 1');
@@ -34,10 +42,11 @@ $tweets = $model->getData();
 
 // Fetch the singular model
 require_once JPATH_COMPONENT_ADMINISTRATOR . '/models/tweet.php';
-$tweetModel = new TweetSchedulerModelTweet();
+$tweetModel = new TweetSchedulerModelTweet;
 
 // @todo: Make this configurable
 $timeLimit = 60 * 60 * 24 * 14;
+
 // @todo: Move this to the model
 define('COM_TWEETSCHEDULER_POSTSTATE_STALLED', 3);
 
@@ -60,7 +69,7 @@ if (!empty($tweets))
 			$tweetModel->updateState($tweet->id, COM_TWEETSCHEDULER_POSTSTATE_STALLED, null, $postError);
 		}
 
-		TweetSchedulerHelper::post($tweet);
+		TweetschedulerHelper::post($tweet);
 		$count++;
 	}
 }

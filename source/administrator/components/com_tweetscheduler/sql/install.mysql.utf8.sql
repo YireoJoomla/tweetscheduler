@@ -8,9 +8,10 @@ CREATE TABLE IF NOT EXISTS `#__tweetscheduler_tweets` (
   `post_state` tinyint(1) NOT NULL,
   `post_id` varchar(32) NOT NULL,
   `post_error` varchar(255) NOT NULL,
-  `published` tinyint(1) NOT NULL,
-  `checked_out` int(11) NOT NULL default '0',
-  `checked_out_time` datetime NOT NULL default '0000-00-00 00:00:00',
+  `utc` tinyint(1) NOT NULL DEFAULT 0,
+  `published` tinyint(1) NOT NULL DEFAULT 0,
+  `checked_out` int(11) NOT NULL DEFAULT 0,
+  `checked_out_time` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `params` text NOT NULL,
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;

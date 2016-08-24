@@ -114,6 +114,10 @@ class TweetschedulerModelTweet extends YireoModel
 			$post_date->setTimezone($timezone);
 			$data->post_date = $post_date->format('Y-m-d H:i', $timezone);
 		}
+		else
+		{
+			$data->utc = 0;
+		}
 
 		return $data;
 	}

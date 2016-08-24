@@ -21,7 +21,7 @@ class TweetschedulerController extends YireoController
 	 */
 	public function __construct()
 	{
-		$this->_default_view = 'home';
+		$this->default_view = 'home';
 		parent::__construct();
 	}
 
@@ -62,12 +62,13 @@ class TweetschedulerController extends YireoController
 		}
 
 		// Call upon the service to authorize
+		/** @var \Yireo\Tweetscheduler\Model\Service\Generic $service */
 		$service = $this->getServiceByType($data->type);
 		$service->setData($data);
 		$rt = $service->authorize();
 
 		// Store the modified data
-		if ($rt == true)
+		if ($rt === true)
 		{
 			$data = $service->getData();
 			$this->storeOauthCredentials($data);
@@ -77,7 +78,7 @@ class TweetschedulerController extends YireoController
 		$service->redirectAuthorize();
 
 		// Handle the response
-		if ($rt == false)
+		if ($rt === false)
 		{
 			$this->msg_type = 'error';
 			$this->msg      = $service->getMessage();
@@ -102,7 +103,7 @@ class TweetschedulerController extends YireoController
 	 *
 	 * @param $type
 	 *
-	 * @return \Yireo\Tweetscheduler\Model\Service\Contract
+	 * @return \Yireo\Tweetscheduler\Model\Service\Generic
 	 */
 	protected function getServiceByType($type)
 	{

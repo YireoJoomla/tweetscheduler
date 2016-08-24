@@ -4,10 +4,10 @@
     <author>Yireo</author>
     <authoremail>info@yireo.com</authoremail>
     <authorurl>https://www.yireo.com</authorurl>
-    <creationDate>May 2015</creationDate>
+    <creationDate>August 2016</creationDate>
     <copyright>Copyright 2016 Yireo.com. All rights reserved.</copyright>
     <license>http://www.gnu.org/licenses/gpl-3.0.html GNU/GPL</license>
-    <version>0.2.21</version>
+    <version>0.2.24</version>
     <description>COM_TWEETSCHEDULER_DESC</description>
 
     <!-- installation part -->
