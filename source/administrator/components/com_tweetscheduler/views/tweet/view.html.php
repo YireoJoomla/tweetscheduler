@@ -122,7 +122,12 @@ class TweetschedulerViewTweet extends YireoViewForm
 		$link = $this->getFrontendUrl($slug, $catslug);
 
 		require_once JPATH_COMPONENT . '/helpers/shortener.php';
-		$link = TweetschedulerHelperShortener::autoshortenUrl($link);
+		$shortcutLink = TweetschedulerHelperShortener::autoshortenUrl($link);
+
+		if (!empty($shortcutLink))
+		{
+			$link = $shortcutLink;
+		}
 
 		// Construct the message
 		$this->item->message = $this->getMessageText($article->title, $article->introtext, $link);
@@ -141,7 +146,7 @@ class TweetschedulerViewTweet extends YireoViewForm
 	{
 		// Fetch parameters
 		$params        = JComponentHelper::getComponent('com_tweetscheduler')->params;
-		$article_parts = $params->get('article_parts');
+		$article_parts = $params->get('article_parts', 'tu');
 		$introtext     = strip_tags($introtext);
 
 		// Maximum chars in 1 tweet
@@ -174,6 +179,7 @@ class TweetschedulerViewTweet extends YireoViewForm
 
 		// Switch for the right ordering
 		$availableChars = $maxChars - $charCount - 2;
+		$message = null;
 
 		if ($article_parts == 'tu')
 		{

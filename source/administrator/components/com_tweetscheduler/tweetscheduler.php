@@ -57,6 +57,7 @@ else
 }
 
 // Perform the requested task
+//echo $input->getCmd('task');exit;
 $controller->execute($input->getCmd('task'));
 $controller->redirect();
 
