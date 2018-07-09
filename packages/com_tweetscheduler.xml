@@ -1,0 +1,19 @@
+<?xml version="1.0" ?>
+<updates>
+    <update>
+        <name>TweetScheduler</name>
+        <element>com_tweetscheduler</element>
+        <type>component</type>
+        <client>1</client>
+        <version>0.2.24</version>
+        <infourl title="TweetScheduler">http://www.yireo.com/software/joomla-extensions/tweetscheduler</infourl>
+        <downloads>
+            <downloadurl type="full" format="zip">https://www.yireo.com/documents/com_tweetscheduler_j3x.zip</downloadurl>
+        </downloads>
+        <maintainer>Yireo</maintainer>
+        <maintainerurl>https://www.yireo.com</maintainerurl>
+        <section>Yireo</section>
+        <targetplatform name="joomla" version="3.[0123456789]" />
+        <php_minimum>5.4</php_minimum>
+    </update>
+</updates>
